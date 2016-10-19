@@ -208,7 +208,9 @@ class Restaurant extends ActiveRecord
         $split = explode(' ', $this->name);
         $short = '';
         foreach ($split as $part) {
-            $short .= $part{0};
+            if (strlen($part)) {
+                $short .= $part{0};
+            }
         }
         
         return mb_strtoupper($short, 'UTF-8');
