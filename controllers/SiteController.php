@@ -173,7 +173,9 @@ class SiteController extends Controller
         }
         
         $model = new FoodForm;
-        $model->restaurant = $order->restaurant_id;
+        if (empty($order->restaurant2_id)) {
+            $model->restaurant = $order->restaurant_id;
+        }
         if ($model->load(Yii::$app->request->post())) {
             $model->screen = UploadedFile::getInstance($model, 'screen');
             if ($model->validate()) {
