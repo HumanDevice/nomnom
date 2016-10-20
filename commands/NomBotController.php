@@ -2,6 +2,7 @@
 
 namespace app\commands;
 
+use app\components\HipChat;
 use app\models\Order;
 use Yii;
 use yii\console\Controller;
@@ -24,10 +25,11 @@ class NomBotController extends Controller
         if ($order->stage_end - 9 * 60 - 30 > time() && time() > $order->stage_end - 11 * 60 + 30) {
             $message = '@all Zostało 10 minut do końca ';
             if ($order->stage == Order::STAGE_VOTE) {
-                $message .= 'głosowania! (watchingyou)';
+                $message .= 'głosowania! ';
             } else {
-                $message .= 'wybierania posiłku! (zmiana)';
+                $message .= 'wybierania posiłku! ';
             }
+            $message .= HipChat::randomNope();
             Yii::$app->hipchat->send($message, 'red');
         } elseif ($order->stage_end + 30 > time() && time() > $order->stage_end - 30) {
             $message = '@all Koniec ';

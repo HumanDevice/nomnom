@@ -85,9 +85,26 @@ class HipChat extends Component
     {
         $list = ['(allthethings)', '(awesome)', '(awthanks)', '(aww)', 
             '(awwyiss)', '(awyeah)', '(badass)', '(boom)', '(celeryman)', 
-            '(content)', '(drool)', '(feelsgoodman)', '(goodnews)', '(megusta)', 
-            '(mindblown)', '(nice)', '(notbad)', '(ohmy)', '(success)', 
-            '(sweetjesus)', '(yey)', '(goodone)', '(uuuuuuu)'];
+            '(content)', '(dobre)', '(drool)', '(feelsgoodman)', '(goodnews)', 
+            '(megusta)', '(mindblown)', '(motherofgod)', '(nice)', '(notbad)', 
+            '(ohmy)', '(success)', '(sweetjesus)', '(yey)', '(goodone)', 
+            '(uuuuuuu)'];
+        
+        return $list[array_rand($list)];
+    }
+    
+    /**
+     * Returns random nope.
+     * @return string
+     */
+    public static function randomNope()
+    {
+        $list = ['(areyoukiddingme)', '(badjokeeel)', '(badpokerface)', 
+            '(badtime)', '(challengeaccepted)', '(dealwithit)', '(derp)', 
+            '(disapproval)', '(doh)', '(donotwant)', '(drevil)', '(evilburns)', 
+            '(facepalm)', '(fry)', '(grumpycat)', '(gtfo)', '(itsatrap)', 
+            '(ohcrap)', '(ohgodwhy)', '(omg)', '(pokerface)', '(watchingyou)', 
+            '(youdontsay)', '(yuno)', '(zmiana)'];
         
         return $list[array_rand($list)];
     }
