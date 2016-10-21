@@ -118,7 +118,9 @@ JS
                     <?php if ($order->stage_end < time() && $order->admin_id == Yii::$app->user->id): ?>
                     <th class="text-center danger">Dzisiaj jemy w (max 2)</th>
                     <?php endif ?>
+                    <?php if ($order->admin_id == Yii::$app->user->id): ?>
                     <th class="text-center">Ilość głosów</th>
+                    <?php endif ?>
                     <th>Nazwa restauracji</th>
                     <th>Link do menu</th>
                     <th>Zdjęcie menu</th>
@@ -129,13 +131,11 @@ JS
                     <?php if ($order->stage_end < time() && $order->admin_id == Yii::$app->user->id): ?>
                     <td class="text-center danger clickable"><?= Html::activeCheckbox($model, 'restaurant[]', ['value' => $id, 'label' => false, 'uncheck' => null]) ?></td>
                     <?php endif ?>
+                    <?php if ($order->admin_id == Yii::$app->user->id): ?>
                     <td class="text-center">
-                        <?php if ($order->admin_id == Yii::$app->user->id ||$order->stage_end < time()): ?>
                         <span class="badge"><?= $restaurant['votes'] ?></span>
-                        <?php else: ?>
-                        <span class="text-muted">ukryta</span>
-                        <?php endif ?>
                     </td>
+                    <?php endif ?>
                     <td><?= Html::encode($restaurant['name']) ?></td>
                     <td><?= !empty($restaurant['url']) ? Html::a($restaurant['url'], $restaurant['url'], ['target' => 'restaurant']) : null ?></td>
                     <td><?= !empty($restaurant['screen']) ? Html::a('Zobacz', '/uploads/menu/' . $restaurant['screen'], ['target' => 'restaurant', 'class' => 'btn btn-info btn-xs']) : null ?></td>
