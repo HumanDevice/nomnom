@@ -99,6 +99,7 @@ class Order extends ActiveRecord
                     'votes' => 1,
                     'name' => $choice->restaurant->name,
                     'url' => $choice->restaurant->url,
+                    'screen' => $choice->restaurant->screen,
                 ];
             } else {
                 $votes[$choice->restaurant_id]['votes'] += 1;
