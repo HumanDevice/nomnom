@@ -58,7 +58,7 @@ class Restaurant extends ActiveRecord
             ['max', 'integer', 'min' => 1],
             [['preferred', 'stay'], 'boolean'],
             ['url', 'url', 'defaultScheme' => 'http'],
-            ['screen', 'image', 'extensions' => 'png, jpg, gif', 'maxWidth' => 1000, 'maxHeight' => 1000, 'mimeTypes' => 'image/*', 'maxSize' => 1024 * 1024],
+            ['screen', 'image', 'extensions' => 'png, jpg, gif', 'maxWidth' => 3000, 'maxHeight' => 3000, 'mimeTypes' => 'image/*', 'maxSize' => 5 * 1024 * 1024],
             [['name', 'url'], 'string', 'max' => 255],
         ];
     }
