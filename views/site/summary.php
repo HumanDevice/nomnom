@@ -5,7 +5,7 @@ use yii\helpers\Url;
 
 ?>
 <tr>
-    <td><?= Html::encode($model->restaurant->short) ?></td>
+    <td><?= Html::encode($model->author->short) ?></td>
     <?php if (!empty($model->code)): ?>
     <td><?= Html::encode($model->code) ?></td>
     <?php endif ?>

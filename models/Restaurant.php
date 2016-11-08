@@ -186,7 +186,7 @@ class Restaurant extends ActiveRecord
      */
     public static function getDetailedList()
     {
-        $all = Restaurant::find()->where(['deleted' => 0])->orderBy(['name' => SORT_ASC])->all();
+        $all = Restaurant::find()->where(['and', ['deleted' => 0], ['!=', 'id', Yii::$app->params['default_restaurant']]])->orderBy(['name' => SORT_ASC])->all();
         $list = [];
         foreach ($all as $restaurant) {
             $list[$restaurant->id] = [

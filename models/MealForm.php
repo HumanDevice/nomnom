@@ -14,7 +14,7 @@ use yii\base\Model;
  */
 class MealForm extends Model
 {
-    public $restaurant = [];
+    public $restaurant;
     public $restaurantNames = [];
     public $hour;
     public $minute;
@@ -28,7 +28,7 @@ class MealForm extends Model
     {
         return [
             [['restaurant', 'hour', 'minutes'], 'required'],
-            ['restaurant', 'each', 'rule' => ['integer']],
+            ['restaurant', 'integer'],
             ['hour', 'in', 'range' => array_keys($this->hours)],
             ['minute', 'in', 'range' => array_keys($this->minutes)],
         ];
@@ -51,7 +51,7 @@ class MealForm extends Model
     public function attributeLabels()
     {
         return [
-            'restaurant' => 'Restauracja, w której dzisiaj jemy,'
+            'restaurant' => 'Restauracja'
         ];
     }
     
@@ -78,25 +78,24 @@ class MealForm extends Model
                 return 'Brak zamówienia na odpowiednim etapie!';
             }
             
+            $defaultRestaurant = Restaurant::findOne(Yii::$app->params['default_restaurant']);
+            if (empty($defaultRestaurant)) {
+                return 'Nie można pobrać danych domyślnej restauracji!';
+            }
             $chosenRestaurant = OrderChoice::find()->where([
                 'order_id' => $order->id,
                 'restaurant_id' => $this->restaurant
-            ])->groupBy('restaurant_id')->all();
+            ])->groupBy('restaurant_id')->limit(1)->one();
             if (empty($chosenRestaurant)) {
                 return 'Musisz wskazać restaurację spośród głosów!';
-            }
-            if (count($this->restaurant) > 2) {
-                return 'Możesz wskazać maksymalnie 2 restauracje spośród głosów!';
             }
             
             $order->stage = Order::STAGE_MEAL;
             $order->stage_end = $stage_end;
-            $attr = 'restaurant_id';
-            foreach ($chosenRestaurant as $chRest) {
-                $order->$attr = $chRest->restaurant_id;
-                $this->restaurantNames[] = $chRest->restaurant->name;
-                $attr = 'restaurant2_id';
-            }
+            $order->restaurant_id = $defaultRestaurant->id;
+            $this->restaurantNames[] = $defaultRestaurant->name;
+            $order->restaurant2_id = $chosenRestaurant->restaurant_id;
+            $this->restaurantNames[] = $chosenRestaurant->restaurant->name;
             if (!$order->save()) {
                 return 'Błąd przy zmianie etapu zamówienia!';
             }

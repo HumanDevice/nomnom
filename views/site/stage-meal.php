@@ -124,7 +124,7 @@ JS
         <?php else: ?>
         <?= Html::activeHiddenInput($model, 'restaurant') ?>
         <?php endif ?>
-        <?= $form->field($model, 'code')->textInput(['autofocus' => true]) ?>
+        <?= $form->field($model, 'code')->textInput(['autofocus' => true])->hint('W przypadku Manufaktury podajemy zamówienie w kolejności: ZUPA + DRUGIE DANIE + SAŁATKI') ?>
         <?= $form->field($model, 'screen')->fileInput() ?>
     </div>
 </div>

@@ -25,6 +25,7 @@ use yii\web\IdentityInterface;
  * @property string $employeeName
  * @property Preference[] $preferences
  * @property Restaurant[] $restaurants
+ * @property string $short
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -183,5 +184,22 @@ class User extends ActiveRecord implements IdentityInterface
         
         $this->generateAuthKey();
         return $this->save();
+    }
+    
+    /**
+     * Return short name.
+     * @return string
+     */
+    public function getShort()
+    {
+        $split = explode(' ', $this->username);
+        $short = '';
+        foreach ($split as $part) {
+            if (strlen($part)) {
+                $short .= $part{0};
+            }
+        }
+        
+        return mb_strtoupper($short, 'UTF-8');
     }
 }

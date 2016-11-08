@@ -8,6 +8,7 @@ use yii\widgets\ActiveForm;
 $this->title = 'NomNom';
 
 $allRestaurants = Restaurant::getDetailedList();
+$defaultRestaurant = Restaurant::findOne(Yii::$app->params['default_restaurant']);
 
 if ($order->stage_end > time()) {
     $this->registerJs(<<<JS
@@ -52,12 +53,12 @@ JS
 }
 if ($order->stage_end < time() && $order->admin_id == Yii::$app->user->id) {
     $this->registerJs(<<<JS
-jQuery(".clickable input[type=checkbox]").on('click touch', function (e) {
+jQuery(".clickable input[type=radio]").on('click touch', function (e) {
     e.stopPropagation();
 });   
 jQuery(".clickable").on('click touch', function () {
-    var checkBox = jQuery(this).find("input[type=checkbox]");
-    checkBox.prop("checked", !checkBox.prop("checked"));
+    var radioButton = jQuery(this).find("input[type=radio]");
+    radioButton.prop("checked", true);
 });
 JS
 );
@@ -102,9 +103,24 @@ JS
         <?php endif ?>
     </div>
 </div>
+<?php if ($defaultRestaurant): ?>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="form-group">
+            <table class="table table-hover">
+                <tr>
+                    <td><?= Html::encode($defaultRestaurant->name) ?></td>
+                    <td><?= !empty($defaultRestaurant->url) ? Html::a($defaultRestaurant->url, $defaultRestaurant->url, ['target' => 'restaurant']) : null ?></td>
+                    <td><?= !empty($defaultRestaurant->screen) ? Html::a('Zobacz', '/uploads/menu/' . $defaultRestaurant->screen, ['target' => 'restaurant', 'class' => 'btn btn-info btn-xs']) : null ?></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
 <div class="row">
     <div class="col-lg-12">
-        <h3>Wybieramy restaurację</h3>
+        <h3>Dodatkowa restauracja (oprócz Manufaktury)</h3>
     </div>
 </div>
 <?php if ($order->stage_end < time() && $order->admin_id == Yii::$app->user->id): ?>
@@ -116,7 +132,7 @@ JS
             <table class="table table-hover">
                 <tr>
                     <?php if ($order->stage_end < time() && $order->admin_id == Yii::$app->user->id): ?>
-                    <th class="text-center danger">Dzisiaj jemy w (max 2)</th>
+                    <th class="text-center danger">Dodatkowa restauracja</th>
                     <?php endif ?>
                     <?php if ($order->admin_id == Yii::$app->user->id): ?>
                     <th class="text-center">Ilość głosów</th>
@@ -129,7 +145,7 @@ JS
                 <?php foreach ($order->votesList as $id => $restaurant): ?>
                 <tr>
                     <?php if ($order->stage_end < time() && $order->admin_id == Yii::$app->user->id): ?>
-                    <td class="text-center danger clickable"><?= Html::activeCheckbox($model, 'restaurant[]', ['value' => $id, 'label' => false, 'uncheck' => null]) ?></td>
+                    <td class="text-center danger clickable"><?= Html::activeRadio($model, 'restaurant', ['value' => $id, 'label' => false]) ?></td>
                     <?php endif ?>
                     <?php if ($order->admin_id == Yii::$app->user->id): ?>
                     <td class="text-center">
@@ -154,7 +170,7 @@ JS
 <div class="row">
     <div class="col-sm-4">
         <div class="form-group text-right">
-            Wybór posiłku do godziny
+            <strong>Wybór posiłku do godziny</strong>
         </div>
     </div>
     <div class="col-sm-2">
@@ -196,7 +212,7 @@ JS
                     <td><?= !empty($restaurant['screen']) ? Html::a('Zobacz', '/uploads/menu/' . $restaurant['screen'], ['target' => 'restaurant', 'class' => 'btn btn-info btn-xs']) : null ?></td>
                     <td><?= $restaurant['like'] ? 'Tak' : 'Nie' ?></td>
                     <td class="text-right">
-                        <a href="<?= Url::to(['site/vote', 'restaurant' => $id, 'order' => $order->id]) ?>" class="btn btn-success">Głosuję na tę restaurację</a>
+                        <a href="<?= Url::to(['site/vote', 'restaurant' => $id, 'order' => $order->id]) ?>" class="btn btn-success">Głosuję na to</a>
                     </td>
                 </tr>
                 <?php endforeach ?>

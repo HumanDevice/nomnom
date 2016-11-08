@@ -74,6 +74,11 @@ $this->title = 'NomNom';
     </div>
 </div>
 
+<div class="row">
+    <div class="col-lg-12">
+        <div class="form-group"><?= Html::encode($order->restaurant->name) ?></div>
+    </div>
+</div>
 <?= ListView::widget([
     'dataProvider' => (new FoodSearch)->summary($order->id, $order->restaurant_id),
     'itemView' => 'summary',
@@ -83,6 +88,11 @@ $this->title = 'NomNom';
 ]) ?>
 
 <?php if (!empty($order->restaurant2)): ?>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="form-group"><?= Html::encode($order->restaurant2->name) ?></div>
+    </div>
+</div>
 <?= ListView::widget([
     'dataProvider' => (new FoodSearch)->summary($order->id, $order->restaurant2_id),
     'itemView' => 'summary',
