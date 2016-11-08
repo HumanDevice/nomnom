@@ -145,7 +145,7 @@ JS
                 <?php foreach ($order->votesList as $id => $restaurant): ?>
                 <tr>
                     <?php if ($order->stage_end < time() && $order->admin_id == Yii::$app->user->id): ?>
-                    <td class="text-center danger clickable"><?= Html::activeRadio($model, 'restaurant', ['value' => $id, 'label' => false]) ?></td>
+                    <td class="text-center danger clickable"><?= Html::activeRadio($model, 'restaurant', ['value' => $id, 'label' => false, 'uncheck' => null]) ?></td>
                     <?php endif ?>
                     <?php if ($order->admin_id == Yii::$app->user->id): ?>
                     <td class="text-center">
