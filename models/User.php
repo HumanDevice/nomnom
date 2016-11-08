@@ -196,7 +196,7 @@ class User extends ActiveRecord implements IdentityInterface
         $short = '';
         foreach ($split as $part) {
             if (strlen($part)) {
-                $short .= $part{0};
+                $short .= mb_substr($part, 0, 1, 'UTF-8');
             }
         }
         
