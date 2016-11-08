@@ -2,9 +2,7 @@
 
 use app\models\FoodSearch;
 use app\models\Order;
-use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
-use yii\helpers\Url;
 use yii\widgets\ListView;
 
 $this->title = 'NomNom';
@@ -16,33 +14,17 @@ $this->title = 'NomNom';
 
 <div class="row">
     <div class="col-lg-12">
-        <p class="pull-right">Zamówienie otworzył <span class="label label-info"><?= Html::encode($order->admin->username) ?></span></p>
         <h1>Zamówienie na dzień <?= date('Y/m/d') ?></h1>
     </div>
 </div>
 <div class="row">
     <div class="col-lg-12">
         <div class="alert alert-info">
-            <?php if ($order->admin_id == Yii::$app->user->id): ?>
-            <a href="<?= Url::to(['site/close']) ?>" class="btn btn-warning pull-right btn-lg" data-confirm="Czy na pewno chcesz zamknąć?">Potwierdź zamówienie i zamknij</a>
-            <?php endif ?>
-            <strong>Wybieranie zamknięte.</strong> Admin przystępuje do zamawiania.
+            <strong>Wybieranie zamknięte.</strong> Można przystąpić do zamawiania.
         </div>
     </div>
 </div>
-<?php if ($order->admin_id == Yii::$app->user->id): ?>
-<div class="row">
-    <div class="col-lg-12">
-        Wyślij wiadomość na HipChat przez bota:
-        <?php $form = ActiveForm::begin(); ?>
-        <?= $form->field($admin, 'msg')->label(false) ?>
-        <div class="form-group">
-            <?= Html::submitButton('Niechaj leci', ['class' => 'btn btn-primary']) ?>
-        </div>
-        <?php ActiveForm::end(); ?>
-    </div>
-</div>
-<?php endif ?>
+
 <div class="row">
     <div class="col-lg-12">
         <div class="form-group">
@@ -76,7 +58,7 @@ $this->title = 'NomNom';
 
 <div class="row">
     <div class="col-lg-12">
-        <div class="form-group"><?= Html::encode($order->restaurant->name) ?></div>
+        <div class="form-group"><h3><?= Html::encode($order->restaurant->name) ?></h3></div>
     </div>
 </div>
 <?= ListView::widget([
@@ -90,7 +72,7 @@ $this->title = 'NomNom';
 <?php if (!empty($order->restaurant2)): ?>
 <div class="row">
     <div class="col-lg-12">
-        <div class="form-group"><?= Html::encode($order->restaurant2->name) ?></div>
+        <div class="form-group"><h3><?= Html::encode($order->restaurant2->name) ?></h3></div>
     </div>
 </div>
 <?= ListView::widget([

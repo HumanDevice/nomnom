@@ -2,12 +2,10 @@
 
 namespace app\controllers;
 
-use app\models\AdminForm;
 use app\models\FoodForm;
 use app\models\FoodSearch;
 use app\models\HistorySearch;
 use app\models\LoginForm;
-use app\models\MealForm;
 use app\models\Order;
 use app\models\OrderChoice;
 use app\models\OrderFood;
@@ -135,17 +133,6 @@ class SiteController extends Controller
      */
     public function stageVote(Order $order)
     {
-        $model = new MealForm;
-        if ($model->load(Yii::$app->request->post())) {
-            $result = $model->start();
-            if ($result === true) {
-                $this->ok('Można zamawiać posiłki.');
-                Yii::$app->hipchat->send($model->message);
-                return $this->goHome();
-            }
-            $this->err($result);
-        }
-        
         $voted = (new Query)
                 ->from(OrderChoice::tableName())
                 ->where([
@@ -155,7 +142,6 @@ class SiteController extends Controller
                 ->exists();
         
         return $this->render('stage-vote', [
-            'model' => $model,
             'order' => $order,
             'voted' => $voted
         ]);
@@ -212,16 +198,7 @@ class SiteController extends Controller
      */
     protected function stageAfterMeal(Order $order)
     {
-        $admin = new AdminForm;
-        if ($admin->load(Yii::$app->request->post()) && $admin->send()) {
-            $this->ok('Wysłano.');
-            return $this->goHome();
-        }
-        
-        return $this->render('stage-after-meal', [
-            'admin' => $admin,
-            'order' => $order,
-        ]);
+        return $this->render('stage-after-meal', ['order' => $order]);
     }
     
     /**
@@ -388,32 +365,6 @@ class SiteController extends Controller
             $this->ok('Zamówienie zostało skopiowane!');
         } else {
             $this->err('Błąd przy kopiowaniu zamówienia!');
-        }
-        return $this->goBack();
-    }
-    
-    /**
-     * Close order.
-     */
-    public function actionClose()
-    {
-        $order = Order::find()->where([
-            'and',
-            [
-                'stage' => Order::STAGE_MEAL,
-                'admin_id' => Yii::$app->user->id
-            ],
-            ['<', 'stage_end', time()]
-        ])->limit(1)->one();
-        if (empty($order)) {
-            $this->err('Brak Twojego zamówienia na odpowiednim etapie!');
-            return $this->goBack();
-        }
-        $order->stage = Order::STAGE_CLOSE;
-        if ($order->save()) {
-            $this->ok('Zamówienie zostało zamknięte.');
-        } else {
-            $this->ok('Błąd zamykania zamówienia!');
         }
         return $this->goBack();
     }

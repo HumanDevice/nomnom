@@ -4,7 +4,6 @@ namespace app\controllers;
 
 use app\models\FoodSearch;
 use app\models\Order;
-use app\models\OrderForm;
 use app\models\OrderSearch;
 use app\models\PreferencesForm;
 use app\models\Restaurant;
@@ -39,29 +38,6 @@ class AdminController extends Controller
         ];
     }
 
-    /**
-     * Opens order.
-     * @return string
-     */
-    public function actionOpen()
-    {
-        if (Order::isOpen()) {
-            $this->info('Zamówienie jest otwarte.');
-            return $this->redirect(['site/index']);
-        }
-        $model = new OrderForm;
-        if ($model->load(Yii::$app->request->post())) {
-            $result = $model->start();
-            if ($result === true) {
-                $this->ok('Zamówienie zostało otwarte.');
-                Yii::$app->hipchat->send($model->message);
-                return $this->goHome();
-            }
-            $this->err($result);
-        }
-        return $this->render('open', ['model' => $model]);
-    }
-    
     /**
      * Preferred restaurants action.
      * @return string

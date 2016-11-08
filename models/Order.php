@@ -12,7 +12,6 @@ use yii\db\Query;
  * "{{%order}}".
  *
  * @property integer $id
- * @property integer $admin_id
  * @property integer $stage
  * @property integer $stage_end
  * @property integer $restaurant_id
@@ -20,11 +19,11 @@ use yii\db\Query;
  * @property integer $created_at
  * @property integer $updated_at
  * 
- * @property User $admin
  * @property Restaurant $restaurant
  * @property Restaurant $restaurant2
  * @property OrderChoice[] $choices
  * @property array $votesList
+ * @property int $winner
  */
 class Order extends ActiveRecord
 {
@@ -46,15 +45,6 @@ class Order extends ActiveRecord
     public function behaviors()
     {
         return [TimestampBehavior::className()];
-    }
-    
-    /**
-     * Restaurant relation
-     * @return ActiveQuery
-     */
-    public function getAdmin()
-    {
-        return $this->hasOne(User::className(), ['id' => 'admin_id']);
     }
     
     /**
@@ -106,16 +96,31 @@ class Order extends ActiveRecord
             }
         }
         
-        if ($this->stage_end < time()) {
+        return $votes;
+    }
+    
+    /**
+     * Returns winner.
+     * @return int
+     */
+    public function getWinner()
+    {
+        $votes = $this->votesList;
+        
+        if (!empty($votes)) {
             uasort($votes, function ($a, $b) {
                 if ($a['votes'] == $b['votes']) {
                     return 0;
                 }
                 return ($a['votes'] < $b['votes']) ? 1 : -1;
             });
+
+            foreach ($votes as $id => $data) {
+                return $id;
+            }
         }
         
-        return $votes;
+        return null;
     }
     
     /**

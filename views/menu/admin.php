@@ -21,15 +21,6 @@ if (!isset($active)) {
     </div>
     <div class="col-lg-3">
         <div class="form-group">
-            <?php if (Order::isOpen()): ?>
-            <a href="#" class="btn btn-default btn-lg btn-block disabled">Zamówienie jest otwarte</a>
-            <?php else: ?>
-            <a href="<?= Url::to(['admin/open']) ?>" class="btn btn-<?= $active == 'o' ? 'danger' : 'primary' ?> btn-lg btn-block">Otwórz zamówienie</a>
-            <?php endif ?>
-        </div>
-    </div>
-    <div class="col-lg-3">
-        <div class="form-group">
             <a href="<?= Url::to(['admin/history']) ?>" class="btn btn-<?= $active == 'h' ? 'danger' : 'default' ?> btn-lg btn-block">Historia zamówień</a>
         </div>
     </div>

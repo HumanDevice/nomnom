@@ -55,7 +55,6 @@ JS
 
 <div class="row">
     <div class="col-lg-12">
-        <p class="pull-right">Zamówienie otworzył <span class="label label-info"><?= Html::encode($order->admin->username) ?></span></p>
         <h1>Zamówienie na dzień <?= date('Y/m/d') ?></h1>
     </div>
 </div>
@@ -124,7 +123,7 @@ JS
         <?php else: ?>
         <?= Html::activeHiddenInput($model, 'restaurant') ?>
         <?php endif ?>
-        <?= $form->field($model, 'code')->textInput(['autofocus' => true])->hint('W przypadku Manufaktury podajemy zamówienie w kolejności: ZUPA + DRUGIE DANIE + SAŁATKI') ?>
+        <?= $form->field($model, 'code')->textInput(['autofocus' => true])->hint('W przypadku Manufaktury podajemy zamówienie w kolejności: ZUPA, DRUGIE DANIE, SAŁATKI') ?>
         <?= $form->field($model, 'screen')->fileInput() ?>
     </div>
 </div>

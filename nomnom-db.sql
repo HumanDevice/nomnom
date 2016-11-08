@@ -13,16 +13,13 @@ CREATE TABLE `user` (
 
 CREATE TABLE `order` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `admin_id` int(11) NOT NULL,
   `stage` smallint(6) NOT NULL DEFAULT '0',
   `stage_end` int(11) NOT NULL,
   `restaurant_id` int(11) DEFAULT NULL,
   `restaurant2_id` int(11) DEFAULT NULL,
   `created_at` int(11) DEFAULT NULL,
   `updated_at` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `fk-order-admin_idx` (`admin_id`),
-  CONSTRAINT `fk-order-admin` FOREIGN KEY (`admin_id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 CREATE TABLE `restaurant` (
