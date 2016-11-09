@@ -88,7 +88,7 @@ class NomNomController extends Controller
                 throw new Exception('Nie można przejść do wyboru posiłku!');
             }
 
-            $single = count($this->restaurantNames) == 1;
+            $single = count($restaurantNames) == 1;
 
             Yii::$app->hipchat->send('@all Naszym' . (!$single ? 'i' : '')
                 . ' dzisiejszym' . (!$single ? 'i' : '')
