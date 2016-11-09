@@ -10,8 +10,8 @@ $this->title = 'NomNom';
 <div class="row">
     <div class="col-lg-12">
         <h1 class="text-info bg-info text-center">
-            Brak otwartych sesji.<br>
-            <small>Zawołaj admina, żeby otworzył.</small>
+            NomNom śpi.<br>
+            <small>Otwarcie o 10:50.</small>
         </h1>
     </div>
 </div>
