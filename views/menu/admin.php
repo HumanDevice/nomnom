@@ -7,7 +7,7 @@ if (!isset($active)) {
     $active = null;
 }
 ?>
-<?php if (Yii::$app->user->identity->isAdmin): ?>
+<?php if (!Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin): ?>
 <div class="row">
     <div class="col-lg-4">
         <div class="form-group">
