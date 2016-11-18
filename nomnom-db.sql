@@ -53,7 +53,7 @@ CREATE TABLE `order_food` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `order_id` int(11) NOT NULL,
   `author_id` int(11) NOT NULL,
-  `code` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `code` text COLLATE utf8_unicode_ci DEFAULT NULL,
   `screen` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `created_at` int(11) DEFAULT NULL,
   `updated_at` int(11) DEFAULT NULL,

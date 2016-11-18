@@ -25,7 +25,7 @@ class FoodForm extends Model
         return [
             ['restaurant', 'required'],
             ['restaurant', 'integer'],
-            ['code', 'string', 'max' => 255],
+            ['code', 'string'],
             ['screen', 'image', 'extensions' => 'png, jpg, gif', 'maxWidth' => 1000, 'maxHeight' => 1000, 'mimeTypes' => 'image/*', 'maxSize' => 1024 * 1024],
         ];
     }
@@ -57,6 +57,14 @@ class FoodForm extends Model
             return 'Brak zamówienia na odpowiednim etapie!';
         }
 
+        $alreadyOrdered = OrderFood::findOne([
+            'author_id' => Yii::$app->user->id,
+            'order_id' => $order->id,
+        ]);
+        if (!empty($alreadyOrdered)) {
+            return 'Usuń najpierw swoje poprzednie zamówienie, aby je zmienić!';
+        }
+        
         $food = new OrderFood;
         $food->author_id = Yii::$app->user->id;
         $food->order_id = $order->id;
