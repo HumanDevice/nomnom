@@ -341,7 +341,16 @@ class SiteController extends Controller
             return $this->goBack();
         }
         
-        $same = new OrderFood;
+        $alreadyOrdered = OrderFood::findOne([
+            'author_id' => Yii::$app->user->id,
+            'order_id' => $chosenFood->order_id,
+        ]);
+        if (!empty($alreadyOrdered)) {
+            $this->err('Usuń najpierw swoje poprzednie zamówienie, aby je zmienić!');
+            return $this->goBack();
+        }
+        
+        $same = new OrderFood();
         $same->author_id = Yii::$app->user->id;
         $same->order_id = $chosenFood->order_id;
         $same->restaurant_id = $chosenFood->restaurant_id;
@@ -383,4 +392,45 @@ class SiteController extends Controller
             'dataProvider' => $dataProvider,
         ]);
     }
+    
+//    public function beforeAction($action)
+//    {
+//        if (parent::beforeAction($action) && isset($_SERVER['HTTP_USER_AGENT'])) {
+//            $ua = strtolower($_SERVER['HTTP_USER_AGENT']);
+//            if(stripos($ua,'android') !== false) {
+//                echo '<pre>██╗   ██╗ ██████╗ ██╗   ██╗                        
+//╚██╗ ██╔╝██╔═══██╗██║   ██║                        
+// ╚████╔╝ ██║   ██║██║   ██║                        
+//  ╚██╔╝  ██║   ██║██║   ██║                        
+//   ██║   ╚██████╔╝╚██████╔╝                        
+//   ╚═╝    ╚═════╝  ╚═════╝                         
+//                                                   
+//██╗  ██╗ █████╗ ██╗   ██╗███████╗                  
+//██║  ██║██╔══██╗██║   ██║██╔════╝                  
+//███████║███████║██║   ██║█████╗                    
+//██╔══██║██╔══██║╚██╗ ██╔╝██╔══╝                    
+//██║  ██║██║  ██║ ╚████╔╝ ███████╗                  
+//╚═╝  ╚═╝╚═╝  ╚═╝  ╚═══╝  ╚══════╝                  
+//                                                   
+//██████╗ ███████╗███████╗███╗   ██╗                 
+//██╔══██╗██╔════╝██╔════╝████╗  ██║                 
+//██████╔╝█████╗  █████╗  ██╔██╗ ██║                 
+//██╔══██╗██╔══╝  ██╔══╝  ██║╚██╗██║                 
+//██████╔╝███████╗███████╗██║ ╚████║                 
+//╚═════╝ ╚══════╝╚══════╝╚═╝  ╚═══╝                 
+//                                                   
+//██╗  ██╗ █████╗ ██╗  ██╗██╗  ██╗███████╗██████╗ ██╗
+//██║  ██║██╔══██╗╚██╗██╔╝╚██╗██╔╝██╔════╝██╔══██╗██║
+//███████║███████║ ╚███╔╝  ╚███╔╝ █████╗  ██║  ██║██║
+//██╔══██║██╔══██║ ██╔██╗  ██╔██╗ ██╔══╝  ██║  ██║╚═╝
+//██║  ██║██║  ██║██╔╝ ██╗██╔╝ ██╗███████╗██████╔╝██╗
+//╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚═════╝ ╚═╝
+//                                                   </pre>';
+//                
+//                
+//                exit();
+//            }
+//        }
+//        return true;
+//    }
 }
