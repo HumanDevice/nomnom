@@ -33,10 +33,10 @@ $this->title = 'NomNom';
                 <strong>1. <?= Html::encode($order->restaurant->name) ?></strong>: 
                 <?php if (!empty($order->restaurant->url)): ?>
                 <?= Html::a('LINK DO MENU', $order->restaurant->url, ['class' => 'btn btn-danger', 'target' => 'restaurant']) ?>
-                <?php endif ?>
+                <?php endif; ?>
                 <?php if (!empty($order->restaurant->screen)): ?>
                 <?= Html::a('ZDJĘCIE MENU', '/uploads/menu/' . $order->restaurant->screen, ['class' => 'btn btn-danger', 'target' => 'menu']) ?>
-                <?php endif ?>
+                <?php endif; ?>
                 <small>Max <?= $order->restaurant->max ?> restauracj<?= $order->restaurant->max == 1 ? 'a' : 'e' ?> z tego miejsca</small>
             </h3>
             <?php if (!empty($order->restaurant2)): ?>
@@ -44,13 +44,16 @@ $this->title = 'NomNom';
                 <strong>2. <?= Html::encode($order->restaurant2->name) ?></strong>: 
                 <?php if (!empty($order->restaurant2->url)): ?>
                 <?= Html::a('LINK DO MENU', $order->restaurant2->url, ['class' => 'btn btn-danger', 'target' => 'restaurant2']) ?>
-                <?php endif ?>
+                <?php endif; ?>
                 <?php if (!empty($order->restaurant2->screen)): ?>
                 <?= Html::a('ZDJĘCIE MENU', '/uploads/menu/' . $order->restaurant2->screen, ['class' => 'btn btn-danger', 'target' => 'menu2']) ?>
-                <?php endif ?>
+                <?php endif; ?>
                 <small>Max <?= $order->restaurant2->max ?> restauracj<?= $order->restaurant2->max == 1 ? 'a' : 'e' ?> z tego miejsca</small>
             </h3>
-            <?php endif ?>
+            <?php endif; ?>
+            <?php if (!empty($order->nextRestaurant)): ?>
+            <span class="text-muted">Następna niewybrana restauracja: <?= Html::encode($order->nextRestaurant->name) ?></span>
+            <?php endif; ?>
             <hr>
         </div>
     </div>

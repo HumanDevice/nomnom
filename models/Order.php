@@ -124,6 +124,43 @@ class Order extends ActiveRecord
     }
     
     /**
+     * Returns second place.
+     * @return int
+     */
+    public function getSecond()
+    {
+        $votes = $this->votesList;
+        
+        if (count($votes) > 1) {
+            uasort($votes, function ($a, $b) {
+                if ($a['votes'] == $b['votes']) {
+                    return 0;
+                }
+                return ($a['votes'] < $b['votes']) ? 1 : -1;
+            });
+
+            $first = false;
+            foreach ($votes as $id => $data) {
+                if ($first) {
+                    return $id;
+                }
+                $first = true;
+            }
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Returns next restaurant after winner.
+     * @return Restaurant
+     */
+    public function getNextRestaurant()
+    {
+        return Restaurant::findOne(['id' => $this->second, 'deleted' => 0]);
+    }
+    
+    /**
      * Checks if there is order opened.
      * @return bool
      */

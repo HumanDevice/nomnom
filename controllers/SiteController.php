@@ -10,6 +10,7 @@ use app\models\Order;
 use app\models\OrderChoice;
 use app\models\OrderFood;
 use app\models\Restaurant;
+use app\models\RestaurantSearch;
 use app\models\StartForm;
 use Yii;
 use yii\db\Query;
@@ -388,6 +389,21 @@ class SiteController extends Controller
         $dataProvider = $searchModel->history(Yii::$app->request->queryParams);
 
         return $this->render('history', [
+            'searchModel'  => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+    
+    /**
+     * Restaurants
+     * @return string
+     */
+    public function actionRestaurants()
+    {
+        $searchModel = new RestaurantSearch;
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('restaurants', [
             'searchModel'  => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
