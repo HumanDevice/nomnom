@@ -26,7 +26,7 @@ function initializeClock(id, endtime) {
     var hoursSpan = clock.querySelector('.hours');
     var minutesSpan = clock.querySelector('.minutes');
     var secondsSpan = clock.querySelector('.seconds');
-        
+
     function updateClock() {
         var t = getTimeRemaining(endtime);
 
@@ -86,7 +86,7 @@ JS
         <div class="form-group">
             <h3>Zamawiamy z</h3>
             <h3>
-                <strong>1. <?= Html::encode($order->restaurant->name) ?></strong>: 
+                <strong>1. <?= Html::encode($order->restaurant->name) ?></strong>:
                 <?php if (!empty($order->restaurant->url)): ?>
                 <?= Html::a('LINK DO MENU', $order->restaurant->url, ['class' => 'btn btn-danger', 'target' => 'restaurant']) ?>
                 <?php endif ?>
@@ -97,7 +97,7 @@ JS
             </h3>
             <?php if (!empty($order->restaurant2)): ?>
             <h3>
-                <strong>2. <?= Html::encode($order->restaurant2->name) ?></strong>: 
+                <strong>2. <?= Html::encode($order->restaurant2->name) ?></strong>:
                 <?php if (!empty($order->restaurant2->url)): ?>
                 <?= Html::a('LINK DO MENU', $order->restaurant2->url, ['class' => 'btn btn-danger', 'target' => 'restaurant2']) ?>
                 <?php endif ?>
@@ -124,7 +124,7 @@ JS
         <?= Html::activeHiddenInput($model, 'restaurant') ?>
         <?php endif ?>
         <?= $form->field($model, 'code')->textInput(['autofocus' => true])->hint('W przypadku Manufaktury podajemy zamówienie w kolejności: ZUPA, DRUGIE DANIE, SAŁATKI') ?>
-        <?= $form->field($model, 'screen')->fileInput() ?>
+        <?php /*= $form->field($model, 'screen')->fileInput()*/ ?>
     </div>
 </div>
 <div class="row">
