@@ -10,14 +10,14 @@ use yii\data\ActiveDataProvider;
 
 /**
  * HistorySearch
- * 
+ *
  */
 class HistorySearch extends OrderFood
 {
     public $is_screen;
     public $restaurant_name;
     public $date;
-    
+
     /**
      * @inheritdoc
      */
@@ -25,11 +25,11 @@ class HistorySearch extends OrderFood
     {
         return [
             ['is_screen', 'boolean'],
-            [['code', 'restaurant_name'], 'string'],
+            [['code', 'restaurant_name', 'with', 'price'], 'string'],
             ['date', 'date', 'format' => 'yyyy-MM-dd'],
         ];
     }
-    
+
     /**
      * @inheritdoc
      */
@@ -37,7 +37,7 @@ class HistorySearch extends OrderFood
     {
         return Model::scenarios();
     }
-    
+
     /**
      * Creates data provider instance with search query applied
      * @param array $params
@@ -47,7 +47,7 @@ class HistorySearch extends OrderFood
     {
         $query = OrderFood::find()
                 ->where(['author_id' => Yii::$app->user->id])
-                ->joinWith(['restaurant']);
+                ->joinWith(['restaurant', 'withOther']);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -55,7 +55,7 @@ class HistorySearch extends OrderFood
                 'defaultOrder' => ['date' => SORT_DESC],
             ]
         ]);
-        
+
         $dataProvider->sort->attributes['date'] = [
             'asc' => ['created_at' => SORT_ASC],
             'desc' => ['created_at' => SORT_DESC],
@@ -63,6 +63,10 @@ class HistorySearch extends OrderFood
         $dataProvider->sort->attributes['restaurant_name'] = [
             'asc' => ['restaurant.name' => SORT_ASC],
             'desc' => ['restaurant.name' => SORT_DESC],
+        ];
+        $dataProvider->sort->attributes['with'] = [
+            'asc' => ['user.username' => SORT_ASC],
+            'desc' => ['user.username' => SORT_DESC],
         ];
 
         $this->load($params);
@@ -73,7 +77,9 @@ class HistorySearch extends OrderFood
 
         $query
             ->andFilterWhere(['like', 'code', $this->code])
-            ->andFilterWhere(['like', 'restaurant.name', $this->restaurant_name]);
+            ->andFilterWhere(['like', 'restaurant.name', $this->restaurant_name])
+            ->andFilterWhere(['like', 'user.username', $this->with])
+            ->andFilterWhere(['price' => $this->price]);
         if ($this->date) {
             $query
                 ->andWhere(['>=', OrderFood::tableName(). '.created_at', (int)Yii::$app->formatter->asTimestamp(

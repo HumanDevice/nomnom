@@ -34,10 +34,20 @@ $this->title = 'NomNom Historia';
             'filter' => [1 => 'Jest', 0 => 'Brak'],
             'format' => 'raw',
             'value' => function ($model) {
-                return !empty($model->screen) ? Html::a('Zobacz', '/uploads/' 
-                        . Yii::$app->user->id 
-                        . '/' 
+                return !empty($model->screen) ? Html::a('Zobacz', '/uploads/'
+                        . Yii::$app->user->id
+                        . '/'
                         . $model->screen, ['target' => 'historia', 'class' => 'btn btn-info btn-xs', 'data-pjax' => '0']) : null;
+            }
+        ],
+        [
+            'attribute' => 'price',
+            'format' => ['currency', 'PLN']
+        ],
+        [
+            'attribute' => 'with',
+            'value' => function ($model) {
+                return $model->withOther->username;
             }
         ],
         [

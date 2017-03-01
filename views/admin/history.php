@@ -3,6 +3,7 @@
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
 use yii\grid\SerialColumn;
+use yii\helpers\Html;
 use yii\widgets\Pjax;
 
 $this->title = 'NomNomAdmin Historia';
@@ -24,7 +25,7 @@ $this->title = 'NomNomAdmin Historia';
     'filterModel' => $searchModel,
     'columns'      => [
         [
-            'class' => SerialColumn::className()
+            'class' => SerialColumn::class
         ],
         [
             'attribute' => 'date',
@@ -33,8 +34,11 @@ $this->title = 'NomNomAdmin Historia';
             }
         ],
         [
-            'class' => ActionColumn::className(),
-            'template' => '{view}'
+            'class' => ActionColumn::class,
+            'template' => '{view}',
+            'buttons' => function ($url) {
+                return Html::a('Podgląd zamówienia', $url, ['class' => 'btn btn-primary btn-xs']);
+            }
         ],
     ]
 ]); ?>
