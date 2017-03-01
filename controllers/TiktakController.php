@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\HourSearch;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -55,11 +56,32 @@ class TiktakController extends Controller
      */
     public function actionIndex()
     {
-
-
+        $searchModel = new HourSearch;
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
-            'week' => $this->getWeek()
+            'week' => $this->getWeek(),
+            'searchModel'  => $searchModel,
+            'dataProvider' => $dataProvider,
         ]);
+    }
+
+    /**
+     * Edit hours
+     * @return string
+     */
+    public function actionUpdate()
+    {
+        $model = Hour::findOne(['user_id' => Yii::$app->user->id]);
+        if (empty($model)) {
+            $model = new Hour;
+            $model->user_id = Yii::$app->user->id;
+        }
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $this->ok('Godziny uaktualnione.');
+            return $this->redirect(['tiktak/index']);
+        }
+
+        return $this->render('update', ['model' => $model]);
     }
 }

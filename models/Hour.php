@@ -11,34 +11,34 @@ use yii\web\UploadedFile;
 
 
 /**
- * "{{%restaurant}}".
+ * "{{%hour}}".
  *
- * @property integer $id
- * @property integer $user_id
- * @property string $name
- * @property string $old_name
- * @property string $url
- * @property string $screen
- * @property integer $max
- * @property integer $created_at
- * @property integer $updated_at
- * @property integer $deleted
- * @property string $phone
+ * @property int $id
+ * @property int $user_id
+ * @property string $monday_odd
+ * @property string $monday_even
+ * @property string $tuesday_odd
+ * @property string $tuesday_even
+ * @property string $wednesday_odd
+ * @property string $wednesday_even
+ * @property string $thursday_odd
+ * @property string $thursday_even
+ * @property string $friday_odd
+ * @property string $friday_even
+ * @property int $updated_at
+ * @property int $created_at
+ * @property string $vacation
  *
- * @property string $restaurantName
- * @property string $short
+ * @property User $user
  */
 class Hour extends ActiveRecord
 {
-    public $preferred = 1;
-    public $stay = 1;
-
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return '{{%restaurant}}';
+        return '{{%hour}}';
     }
 
     /**
@@ -46,7 +46,7 @@ class Hour extends ActiveRecord
      */
     public function behaviors()
     {
-        return [TimestampBehavior::className()];
+        return [TimestampBehavior::class];
     }
 
     /**
@@ -55,13 +55,9 @@ class Hour extends ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'preferred', 'max'], 'required'],
-            ['name', 'unique'],
-            ['max', 'integer', 'min' => 1],
-            [['preferred', 'stay'], 'boolean'],
-            ['url', 'url', 'defaultScheme' => 'http'],
-            ['screen', 'image', 'extensions' => 'png, jpg, gif', 'maxWidth' => 3000, 'maxHeight' => 3000, 'mimeTypes' => 'image/*', 'maxSize' => 5 * 1024 * 1024],
-            [['name', 'url', 'phone'], 'string', 'max' => 255],
+            [['monday_odd', 'monday_even', 'tuesday_odd', 'tuesday_even',
+                'wednesday_odd', 'wednesday_even', 'thursday_odd',
+                'thursday_even', 'friday_odd', 'friday_even', 'vacation'], 'string', 'max' => 255],
         ];
     }
 
@@ -71,151 +67,26 @@ class Hour extends ActiveRecord
     public function attributeLabels()
     {
         return [
-            'name' => 'Nazwa',
-            'stay' => 'Nie usuwaj zdjęcia',
-            'url' => 'Link do menu',
-            'phone' => 'Telefon',
-            'screen' => 'Zdjęcie menu opcjonalnie',
-            'max' => 'Maksymalna ilość restauracji, z których można zamówić na raz',
-            'preferred' => 'Wszyscy mogą tu zamawiać'
+            'monday_odd' => 'Pn (N)',
+            'monday_even' => 'Pn (P)',
+            'tuesday_odd' => 'Wt (N)',
+            'tuesday_even' => 'Wt (p)',
+            'wednesday_odd' => 'Śr (N)',
+            'wednesday_even' => 'Śr (P)',
+            'thursday_odd' => 'Cz (N)',
+            'thursday_even' => 'Cz (P)',
+            'friday_odd' => 'Pt (N)',
+            'friday_even' => 'Pt (P)',
+            'vacation' => 'Urlop',
         ];
     }
 
     /**
-     * Returns actual restaurant name.
-     * @return string
+     * User relation
+     * @return ActiveQuery
      */
-    public function getRestaurantName()
+    public function getUser()
     {
-        return $this->deleted ? $this->old_name : $this->name;
-    }
-
-    /**
-     * Adds new restaurant and changes all user new restaurant flags.
-     * @return boolean
-     */
-    public function add()
-    {
-        $transaction = Yii::$app->db->beginTransaction();
-        try {
-            if ($this->screen instanceof UploadedFile) {
-                $directory = Yii::getAlias('@app/web/uploads') . '/menu';
-                if (!FileHelper::createDirectory($directory)) {
-                    return 'Błąd tworzenia folderu menu!';
-                }
-                $file = Yii::$app->security->generateRandomString(10) . '.' . $this->screen->extension;
-                if (!$this->screen->saveAs($directory . '/' . $file)) {
-                    return 'Błąd zapisu screena!';
-                }
-                $this->screen = $file;
-            } else {
-                $this->screen = null;
-            }
-            if (!$this->save(false)) {
-                throw new Exception('Nie udało się zapisać restauracji!');
-            }
-            $preference = new Preference;
-            $preference->restaurant_id = $this->id;
-            $preference->like = 1;
-            if (!$preference->save()) {
-                throw new Exception('Nie udało się zapisać preferencji!');
-            }
-            $transaction->commit();
-            return true;
-        } catch (Exception $exc) {
-            $transaction->rollBack();
-            Yii::error($exc->getMessage());
-        }
-        return false;
-    }
-
-    /**
-     * Modifies restaurant.
-     * @return boolean
-     */
-    public function modify()
-    {
-        $transaction = Yii::$app->db->beginTransaction();
-        try {
-            if ($this->screen instanceof UploadedFile) {
-                $directory = Yii::getAlias('@app/web/uploads') . '/menu';
-                if (!FileHelper::createDirectory($directory)) {
-                    return 'Błąd tworzenia folderu menu!';
-                }
-                $file = Yii::$app->security->generateRandomString(10) . '.' . $this->screen->extension;
-                if (!$this->screen->saveAs($directory . '/' . $file)) {
-                    return 'Błąd zapisu screena!';
-                }
-                $this->screen = $file;
-            }
-            if (!$this->save(false)) {
-                throw new Exception('Nie udało się zapisać restauracji!');
-            }
-            $transaction->commit();
-            return true;
-        } catch (Exception $exc) {
-            $transaction->rollBack();
-            Yii::error($exc->getMessage());
-        }
-        return false;
-    }
-
-    /**
-     * Returns list of restaurants.
-     * @return array
-     */
-    public static function getList()
-    {
-        $all = Restaurant::find()->where(['deleted' => 0])->asArray()->orderBy(['name' => SORT_ASC])->all();
-        $list = [];
-        foreach ($all as $restaurant) {
-            $list[$restaurant['id']] = [
-                'name' => $restaurant['name'],
-                'url' => $restaurant['url'],
-                'screen' => $restaurant['screen'],
-            ];
-        }
-        return $list;
-    }
-
-    public function getPreference()
-    {
-        return $this->hasOne(Preference::className(), ['restaurant_id' => 'id']);
-    }
-
-    /**
-     * Returns list of restaurants with preferences.
-     * @return array
-     */
-    public static function getDetailedList()
-    {
-        $all = Restaurant::find()->where(['and', ['deleted' => 0], ['!=', 'id', Yii::$app->params['default_restaurant']]])->orderBy(['name' => SORT_ASC])->all();
-        $list = [];
-        foreach ($all as $restaurant) {
-            $list[$restaurant->id] = [
-                'name' => $restaurant->name,
-                'url' => $restaurant->url,
-                'screen' => $restaurant->screen,
-                'like' => $restaurant->preference->like,
-            ];
-        }
-        return $list;
-    }
-
-    /**
-     * Return short name.
-     * @return string
-     */
-    public function getShort()
-    {
-        $split = explode(' ', $this->name);
-        $short = '';
-        foreach ($split as $part) {
-            if (strlen($part)) {
-                $short .= mb_substr($part, 0, 1, 'UTF-8');
-            }
-        }
-
-        return mb_strtoupper($short, 'UTF-8');
+        return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 }

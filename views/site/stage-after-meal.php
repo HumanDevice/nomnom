@@ -30,25 +30,35 @@ $this->title = 'NomNom';
         <div class="form-group">
             <h3>Zamawiamy z</h3>
             <h3>
-                <strong>1. <?= Html::encode($order->restaurant->name) ?></strong>: 
+                <strong>1. <?= Html::encode($order->restaurant->name) ?></strong>
                 <?php if (!empty($order->restaurant->url)): ?>
-                <?= Html::a('LINK DO MENU', $order->restaurant->url, ['class' => 'btn btn-danger', 'target' => 'restaurant']) ?>
+                <?= Html::a('LINK', $order->restaurant->url, ['class' => 'btn btn-danger btn-xs', 'target' => 'restaurant']) ?>
                 <?php endif; ?>
                 <?php if (!empty($order->restaurant->screen)): ?>
-                <?= Html::a('ZDJĘCIE MENU', '/uploads/menu/' . $order->restaurant->screen, ['class' => 'btn btn-danger', 'target' => 'menu']) ?>
+                <?= Html::a('ZDJĘCIE', '/uploads/menu/' . $order->restaurant->screen, ['class' => 'btn btn-danger btn-xs', 'target' => 'menu']) ?>
+                <?php endif; ?><br>
+                <?php if ($order->restaurant->max > 1): ?>
+                <small>Max <?= $order->restaurant->max ?> restauracj<?= $order->restaurant->max == 1 ? 'a' : 'e' ?> z tego miejsca</small><br>
                 <?php endif; ?>
-                <small>Max <?= $order->restaurant->max ?> restauracj<?= $order->restaurant->max == 1 ? 'a' : 'e' ?> z tego miejsca</small>
+                <?php if ($order->restaurant->phone): ?>
+                <small>Telefon: <?= $order->restaurant->phone ?></small>
+                <?php endif; ?>
             </h3>
             <?php if (!empty($order->restaurant2)): ?>
             <h3>
-                <strong>2. <?= Html::encode($order->restaurant2->name) ?></strong>: 
+                <strong>2. <?= Html::encode($order->restaurant2->name) ?></strong>
                 <?php if (!empty($order->restaurant2->url)): ?>
-                <?= Html::a('LINK DO MENU', $order->restaurant2->url, ['class' => 'btn btn-danger', 'target' => 'restaurant2']) ?>
+                <?= Html::a('LINK', $order->restaurant2->url, ['class' => 'btn btn-danger', 'target' => 'restaurant2']) ?>
                 <?php endif; ?>
                 <?php if (!empty($order->restaurant2->screen)): ?>
-                <?= Html::a('ZDJĘCIE MENU', '/uploads/menu/' . $order->restaurant2->screen, ['class' => 'btn btn-danger', 'target' => 'menu2']) ?>
-                <?php endif; ?>
+                <?= Html::a('ZDJĘCIE', '/uploads/menu/' . $order->restaurant2->screen, ['class' => 'btn btn-danger', 'target' => 'menu2']) ?>
+                <?php endif; ?><br>
+                <?php if ($order->restaurant2->max > 1): ?>
                 <small>Max <?= $order->restaurant2->max ?> restauracj<?= $order->restaurant2->max == 1 ? 'a' : 'e' ?> z tego miejsca</small>
+                <?php endif; ?>
+                <?php if ($order->restaurant2->phone): ?>
+                <small>Telefon: <?= $order->restaurant2->phone ?></small>
+                <?php endif; ?>
             </h3>
             <?php endif; ?>
             <?php if (!empty($order->nextRestaurant)): ?>
