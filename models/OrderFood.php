@@ -10,16 +10,19 @@ use yii\db\ActiveRecord;
 /**
  * "{{%order_food}}".
  *
- * @property integer $id
- * @property integer $order_id
- * @property integer $author_id
- * @property integer $restaurant_id
+ * @property int $id
+ * @property int $order_id
+ * @property int $author_id
+ * @property int $restaurant_id
  * @property string $code
  * @property string $screen
- * @property integer $created_at
- * @property integer $updated_at
- * 
+ * @property string $price
+ * @property int $with
+ * @property int $created_at
+ * @property int $updated_at
+ *
  * @property User $author
+ * @property User $withOther
  * @property Order $order
  * @property Restaurant $restaurant
  */
@@ -32,13 +35,13 @@ class OrderFood extends ActiveRecord
     {
         return '{{%order_food}}';
     }
-    
+
     /**
      * @inheritdoc
      */
     public function behaviors()
     {
-        return [TimestampBehavior::className()];
+        return [TimestampBehavior::class()];
     }
 
     /**
@@ -47,27 +50,36 @@ class OrderFood extends ActiveRecord
      */
     public function getAuthor()
     {
-        return $this->hasOne(User::className(), ['id' => 'author_id']);
+        return $this->hasOne(User::class(), ['id' => 'author_id']);
     }
-    
+
+    /**
+     * User relation
+     * @return ActiveQuery
+     */
+    public function getWithOther()
+    {
+        return $this->hasOne(User::class, ['id' => 'with']);
+    }
+
     /**
      * Order relation
      * @return ActiveQuery
      */
     public function getOrder()
     {
-        return $this->hasOne(Order::className(), ['id' => 'order_id']);
+        return $this->hasOne(Order::class(), ['id' => 'order_id']);
     }
-    
+
     /**
      * Restaurant relation
      * @return ActiveQuery
      */
     public function getRestaurant()
     {
-        return $this->hasOne(Restaurant::className(), ['id' => 'restaurant_id']);
+        return $this->hasOne(Restaurant::class(), ['id' => 'restaurant_id']);
     }
-    
+
     /**
      * Labels.
      * @return array
@@ -80,7 +92,9 @@ class OrderFood extends ActiveRecord
             'code' => 'Opis',
             'restaurant_name' => 'Restauracja',
             'date' => 'Data',
+            'price' => 'Kwota',
+            'with' => 'Wspólnie z',
         ];
     }
-    
+
 }

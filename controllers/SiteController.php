@@ -140,7 +140,7 @@ class SiteController extends Controller
                     'order_id' => $order->id,
                     'author_id' => Yii::$app->user->id,
                 ])
-                ->exists();
+                ->limit(1)->one();
 
         return $this->render('stage-vote', [
             'order' => $order,
@@ -166,16 +166,16 @@ class SiteController extends Controller
         if ($model->load(Yii::$app->request->post())) {
             $model->screen = UploadedFile::getInstance($model, 'screen');
             if ($model->validate()) {
-                if (empty($model->code) && empty($model->screen)) {
-                    $model->addError('code', 'Musisz wskazać, co chcesz zamówić.');
-                } else {
-                    $result = $model->order();
-                    if ($result === true) {
-                        $this->ok('Zamówienie złożone.');
-                        return $this->goHome();
-                    }
-                    $this->err($result);
+//                if (empty($model->code) && empty($model->screen)) {
+//                    $model->addError('code', 'Musisz wskazać, co chcesz zamówić.');
+//                } else {
+                $result = $model->order();
+                if ($result === true) {
+                    $this->ok('Zamówienie złożone.');
+                    return $this->goHome();
                 }
+                $this->err($result);
+//                }
             }
         }
 
@@ -227,13 +227,10 @@ class SiteController extends Controller
             $this->err('Termin głosowania upłynął!');
             return $this->goBack();
         }
-        if ((new Query)
-                ->from(OrderChoice::tableName())
-                ->where([
+        if ((new Query)->from(OrderChoice::tableName())->where([
                     'order_id' => $chosenOrder->id,
                     'author_id' => Yii::$app->user->id,
-                ])
-                ->exists()) {
+                ])->exists()) {
             $this->err('Usuń najpierw swój głos, aby go zmienić!');
             return $this->goBack();
         }
@@ -341,6 +338,20 @@ class SiteController extends Controller
             $this->err('Termin głosowania upłynął!');
             return $this->goBack();
         }
+        if (!empty($chosenFood->with)) {
+            $this->err('Zamówienia grupowego nie można kopiować!');
+            return $this->goBack();
+        }
+
+        $balance = Yii::$app->user->identity->balance;
+        $max = $balance - 2.5 ? $balance - 2.5 + 20: 20;
+        if ($max > 99.99) {
+            $max = 99.99;
+        }
+        if ($chosenFood->price > $max) {
+            $this->err('Brak wymaganych środków na koncie!');
+            return $this->goBack();
+        }
 
         $alreadyOrdered = OrderFood::findOne([
             'author_id' => Yii::$app->user->id,
@@ -351,7 +362,7 @@ class SiteController extends Controller
             return $this->goBack();
         }
 
-        $same = new OrderFood();
+        $same = new OrderFood;
         $same->author_id = Yii::$app->user->id;
         $same->order_id = $chosenFood->order_id;
         $same->restaurant_id = $chosenFood->restaurant_id;

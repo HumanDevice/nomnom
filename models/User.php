@@ -12,16 +12,17 @@ use yii\web\IdentityInterface;
 /**
  * "{{%user}}".
  *
- * @property integer $id
+ * @property int $id
  * @property string $auth_key
  * @property string $username
  * @property string $old_username
  * @property string $password_hash
- * @property integer $role
- * @property integer $created_at
- * @property integer $updated_at
- * @property integer $deleted
- * @property integer $division
+ * @property int $role
+ * @property int $created_at
+ * @property int $updated_at
+ * @property int $deleted
+ * @property int $division
+ * @property string $balance
  *
  * @property string $employeeName
  * @property Preference[] $preferences

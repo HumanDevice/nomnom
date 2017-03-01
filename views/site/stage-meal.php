@@ -1,10 +1,12 @@
 <?php
 
+use app\models\FoodForm;
 use app\models\Order;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ListView;
+use yii\widgets\MaskedInput;
 
 $this->title = 'NomNom';
 
@@ -125,6 +127,17 @@ JS
         <?php endif ?>
         <?= $form->field($model, 'code')->textInput(['autofocus' => true])->hint('W przypadku Manufaktury podajemy zamówienie w kolejności: ZUPA, DRUGIE DANIE, SAŁATKI') ?>
         <?php /*= $form->field($model, 'screen')->fileInput()*/ ?>
+        <?= $form->field($model, 'with')->dropDownList([0 => '-'] + FoodForm::withList()) ?>
+        <?= $form->field($model, 'price')->widget(MaskedInput::class, ['mask' => '99.99'])->hint('Proszę pamiętać o doliczeniu ewentualnego kosztu opakowania.') ?>
+        <p>Aktualne saldo: <strong><?= Yii::$app->formatter->asCurrency($balance, 'PLN') ?></strong><br>
+        <?php
+        $balance = Yii::$app->user->identity->balance;
+        $max = $balance - 2.5 > 0 ? $balance + 20 - 2.5 : 20;
+        if ($max > 99.99) {
+            $max = 99.99;
+        }
+        ?>
+        Powyższa kwota pozwala jednorazowo na zamówienie o łącznej wartości <?= Yii::$app->formatter->asCurrency($max, 'PLN') ?></p>
     </div>
 </div>
 <div class="row">
@@ -140,13 +153,16 @@ JS
     <div class="col-lg-12">
         <div class="alert alert-success">
             <a href="<?= Url::to(['site/unorder', 'order' => $order->id]) ?>" class="btn btn-danger btn-lg pull-right" data-confirm="Czy na pewno chcesz usunąć zamówienie?">Usuń zamówienie</a>
-            <strong>Moje zamówienie</strong>:<br><br>
+            <strong>Moje zamówienie na kwotę <span class="label label-danger"><?= Yii::$app->formatter->asCurrency($ordered->price, 'PLN') ?></span></strong>:<br><br>
             <strong>Restauracja</strong>: <?= Html::encode($ordered->restaurant->name) ?>
             <?php if (!empty($ordered->code)): ?>
-            <div class="well well-sm"><?= Html::encode($ordered->code) ?></div>
+            <p><?= Html::encode($ordered->code) ?></p>
             <?php endif ?>
             <?php if (!empty($ordered->screen)): ?>
             <?= Html::img('/uploads/' . $ordered->author_id . '/' . $ordered->screen, ['class' => 'img-thumbnail img-responsive']) ?>
+            <?php endif ?>
+            <?php if (!empty($ordered->with)): ?>
+            <p>Wspólnie z <?= Html::encode($ordered->withOther->username) ?></p>
             <?php endif ?>
         </div>
     </div>

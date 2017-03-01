@@ -28,7 +28,7 @@ function initializeClock(id, endtime) {
     var hoursSpan = clock.querySelector('.hours');
     var minutesSpan = clock.querySelector('.minutes');
     var secondsSpan = clock.querySelector('.seconds');
-        
+
     function updateClock() {
         var t = getTimeRemaining(endtime);
 
@@ -127,6 +127,9 @@ JS
                     <td class="text-right">
                         <?php if (!$voted && $order->stage_end > time()): ?>
                         <a href="<?= Url::to(['site/vote', 'restaurant' => $id, 'order' => $order->id]) ?>" class="btn btn-success">Głosuję na to</a>
+                        <?php endif ?>
+                        <?php if ($voted && $voted['restaurant_id'] == $id): ?>
+                        <i class="glyphicon glyphicon-hand-left"></i> Mój głos
                         <?php endif ?>
                     </td>
                 </tr>

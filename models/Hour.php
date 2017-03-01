@@ -2,12 +2,9 @@
 
 namespace app\models;
 
-use Exception;
-use Yii;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
-use yii\helpers\FileHelper;
-use yii\web\UploadedFile;
 
 
 /**
