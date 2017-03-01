@@ -43,6 +43,7 @@ $this->title = 'NomNomAdmin Restauracje';
                 return !empty($model->screen) ? Html::a('Zobacz', '/uploads/menu/' . $model->screen, ['target' => 'menu', 'class' => 'btn btn-info btn-xs', 'data-pjax' => 0]) : null;
             }
         ],
+        'phone',
         ['class' => ActionColumn::className()],
     ]
 ]); ?>

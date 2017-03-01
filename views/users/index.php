@@ -30,6 +30,13 @@ $this->title = 'NomNomAdmin Użytkownicy';
         ],
         'username',
         [
+            'attribute' => 'division',
+            'filter' => User::divisionLabels(),
+            'value' => function ($model) {
+                return User::divisionLabels()[$model->division];
+            }
+        ],
+        [
             'attribute' => 'role',
             'filter' => [User::ROLE_USER => 'Pracownicy', User::ROLE_ADMIN => 'Admini'],
             'value' => function ($model) {
@@ -49,7 +56,7 @@ $this->title = 'NomNomAdmin Użytkownicy';
             'template' => '{view} {password} {update} {delete}',
             'buttons' => [
                 'password' => function ($url, $model, $key) {
-                    return Html::a(Html::tag('span', '', ['class' => 'glyphicon glyphicon-lock']), $url);
+                    return Html::a(Html::tag('span', '', ['class' => 'glyphicon glyphicon-retweet']), $url);
                 }
             ]
         ],

@@ -21,7 +21,8 @@ use yii\web\IdentityInterface;
  * @property integer $created_at
  * @property integer $updated_at
  * @property integer $deleted
- * 
+ * @property integer $division
+ *
  * @property string $employeeName
  * @property Preference[] $preferences
  * @property Restaurant[] $restaurants
@@ -31,7 +32,14 @@ class User extends ActiveRecord implements IdentityInterface
 {
     const ROLE_USER = 1;
     const ROLE_ADMIN = 2;
-    
+
+    const DIVISION_NONE = 0;
+    const DIVISION_PHP = 1;
+    const DIVISION_ANDROID = 2;
+    const DIVISION_IOS = 3;
+    const DIVISION_JAVA = 4;
+    const DIVISION_QA = 5;
+
     /**
      * @inheritdoc
      */
@@ -45,17 +53,18 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function behaviors()
     {
-        return [TimestampBehavior::className()];
+        return [TimestampBehavior::class];
     }
-    
+
     /**
      * @return array the validation rules.
      */
     public function rules()
     {
         return [
-            [['username', 'role'], 'required'],
+            [['username', 'role', 'division'], 'required'],
             ['role', 'in', 'range' => [self::ROLE_ADMIN, self::ROLE_USER]],
+            ['division', 'in', 'range' => array_keys(static::divisionLabels())],
         ];
     }
 
@@ -67,6 +76,7 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             'username' => 'Imię',
             'role' => 'Rola',
+            'division' => 'Grupa',
         ];
     }
 
@@ -77,7 +87,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return static::findOne(['id' => $id, 'deleted' => 0]);
     }
-    
+
     /**
      * @inheritdoc
      */
@@ -93,7 +103,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return $this->getPrimaryKey();
     }
-    
+
     /**
      * @inheritdoc
      */
@@ -109,7 +119,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         throw new NotSupportedException;
     }
-    
+
     /**
      * Generates password hash from password and sets it to the model
      * @param string $password
@@ -126,7 +136,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         $this->auth_key = Yii::$app->security->generateRandomString();
     }
-    
+
     /**
      * Finds user by username.
      * @param string $username
@@ -141,7 +151,7 @@ class User extends ActiveRecord implements IdentityInterface
         }
         return static::findOne($conditions);
     }
-    
+
     /**
      * Checks if user is admin.
      * @return bool
@@ -150,7 +160,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return $this->role == self::ROLE_ADMIN;
     }
-    
+
     /**
      * Returns actual user name.
      * @return string
@@ -159,7 +169,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return $this->deleted ? $this->old_username : $this->username;
     }
-    
+
     /**
      * Validates password
      * @param string $password password to validate
@@ -169,7 +179,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return Yii::$app->security->validatePassword($password, $this->password_hash);
     }
-    
+
     /**
      * Adds new user.
      * @return bool
@@ -181,11 +191,11 @@ class User extends ActiveRecord implements IdentityInterface
             $this->addError('username', 'Użytkownik o tym imieniu jest już dodany.');
             return false;
         }
-        
+
         $this->generateAuthKey();
         return $this->save();
     }
-    
+
     /**
      * Return short name.
      * @return string
@@ -199,7 +209,23 @@ class User extends ActiveRecord implements IdentityInterface
                 $short .= mb_substr($part, 0, 1, 'UTF-8');
             }
         }
-        
+
         return mb_strtoupper($short, 'UTF-8');
+    }
+
+    /**
+     * Returns division labels.
+     * @return array
+     */
+    public static function divisionLabels()
+    {
+        return [
+            self::DIVISION_NONE => 'brak',
+            self::DIVISION_PHP => 'PHP',
+            self::DIVISION_ANDROID => 'Android',
+            self::DIVISION_IOS => 'iOS',
+            self::DIVISION_JAVA => 'Java',
+            self::DIVISION_QA => 'QA',
+        ];
     }
 }

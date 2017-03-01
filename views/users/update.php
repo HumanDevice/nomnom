@@ -45,6 +45,7 @@ $this->title = 'NomNomAdmin Użytkownicy';
         ]); ?>
             <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
             <?= $form->field($model, 'role')->radioList([User::ROLE_USER => 'Pracownik', User::ROLE_ADMIN => 'Admin']) ?>
+            <?= $form->field($model, 'division')->dropDownList(User::divisionLabels()) ?>
             <div class="form-group">
                 <div class="col-lg-offset-2 col-lg-10">
                     <?= Html::submitButton('Zapisz', ['class' => 'btn btn-primary']) ?>

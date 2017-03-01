@@ -22,7 +22,7 @@ $this->title = 'NomNomAdmin Użytkownicy';
 <div class="row">
     <div class="col-lg-12 text-center">
         <a href="<?= Url::to(['users/reset', 'id' => $model->id]) ?>" class="btn btn-danger btn-lg" data-confirm="Czy na pewno chcesz zresetować hasło tego użytkownika?">
-            <span class="glyphicon glyphicon-lock"></span> Zresetuj hasło użytkownika
+            <span class="glyphicon glyphicon-retweet"></span> Zresetuj hasło użytkownika
         </a>
     </div>
 </div>

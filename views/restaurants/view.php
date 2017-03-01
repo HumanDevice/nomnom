@@ -33,6 +33,7 @@ $this->title = 'NomNomAdmin Restauracje';
             'format' => 'raw',
             'value' => !empty($model->url) ? Html::a($model->url, $model->url, ['target' => 'restaurant']) : null
         ],
+        'phone',
         [
             'attribute' => 'screen',
             'format' => 'raw',

@@ -14,6 +14,7 @@ use yii\web\UploadedFile;
  * "{{%restaurant}}".
  *
  * @property integer $id
+ * @property integer $user_id
  * @property string $name
  * @property string $old_name
  * @property string $url
@@ -27,7 +28,7 @@ use yii\web\UploadedFile;
  * @property string $restaurantName
  * @property string $short
  */
-class Restaurant extends ActiveRecord
+class Hour extends ActiveRecord
 {
     public $preferred = 1;
     public $stay = 1;

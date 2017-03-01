@@ -45,6 +45,7 @@ $this->title = 'NomNomAdmin Restauracje';
         ]); ?>
             <?= $form->field($model, 'name')->textInput(['autofocus' => true]) ?>
             <?= $form->field($model, 'url') ?>
+            <?= $form->field($model, 'phone') ?>
             <?= $form->field($model, 'screen')->fileInput() ?>
             <?php if (!$model->isNewRecord && !empty($model->screen)): ?>
             Zdjęcie: <?= Html::a($model->screen, '/uploads/menu/' . $model->screen, ['target' => 'menu']) ?>

@@ -32,5 +32,9 @@ $this->title = 'NomNomAdmin Użytkownicy';
             'attribute' => 'role',
             'value' => $model->role == User::ROLE_ADMIN ? 'Admin' : 'Pracownik'
         ],
+        [
+            'attribute' => 'division',
+            'value' => User::divisionLabels()[$model->division]
+        ],
     ]
 ]);

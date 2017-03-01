@@ -7,19 +7,19 @@ use yii\data\ActiveDataProvider;
 
 /**
  * UserSearch
- * 
+ *
  */
 class UserSearch extends User
 {
     public $virgin;
-    
+
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['id', 'role', 'virgin'], 'integer'],
+            [['id', 'role', 'virgin', 'division'], 'integer'],
             [['username'], 'string'],
         ];
     }
@@ -54,8 +54,9 @@ class UserSearch extends User
         $query
             ->andFilterWhere(['id' => $this->id])
             ->andFilterWhere(['role' => $this->role])
+            ->andFilterWhere(['division' => $this->division])
             ->andFilterWhere(['like', 'username', $this->username]);
-        
+
         if ($this->virgin === '0') {
             $query->andWhere(['password_hash' => null]);
         }

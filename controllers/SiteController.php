@@ -22,7 +22,7 @@ use yii\web\UploadedFile;
 class SiteController extends Controller
 {
     use FlashTrait;
-    
+
     /**
      * @inheritdoc
      */
@@ -30,7 +30,7 @@ class SiteController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'rules' => [
                     [
                         'actions' => ['login', 'start'],
@@ -66,16 +66,16 @@ class SiteController extends Controller
     public function actionIndex()
     {
         $order = Order::find()->where(['!=', 'stage', Order::STAGE_CLOSE])->orderBy(['id' => SORT_DESC])->limit(1)->one();
-        
+
         if ($order) {
             switch ($order->stage) {
                 case Order::STAGE_VOTE:
                     return $this->stageVote($order);
                 case Order::STAGE_MEAL:
                     return $this->stageMeal($order);
-            }        
+            }
         }
-        
+
         return $this->render('index');
     }
 
@@ -97,7 +97,7 @@ class SiteController extends Controller
             'model' => $model,
         ]);
     }
-    
+
     /**
      * Start action.
      * @return string
@@ -141,13 +141,13 @@ class SiteController extends Controller
                     'author_id' => Yii::$app->user->id,
                 ])
                 ->exists();
-        
+
         return $this->render('stage-vote', [
             'order' => $order,
             'voted' => $voted
         ]);
     }
-    
+
     /**
      * Meal stage
      * @param Order $order
@@ -158,7 +158,7 @@ class SiteController extends Controller
         if ($order->stage_end < time()) {
             return $this->stageAfterMeal($order);
         }
-        
+
         $model = new FoodForm;
         if (empty($order->restaurant2_id)) {
             $model->restaurant = $order->restaurant_id;
@@ -183,7 +183,7 @@ class SiteController extends Controller
             'order_id' => $order->id,
             'author_id' => Yii::$app->user->id,
         ]);
-        
+
         return $this->render('stage-meal', [
             'model' => $model,
             'order' => $order,
@@ -191,7 +191,7 @@ class SiteController extends Controller
             'dataProvider' => (new FoodSearch)->search($order->id)
         ]);
     }
-    
+
     /**
      * After meal stage
      * @param Order $order
@@ -201,7 +201,7 @@ class SiteController extends Controller
     {
         return $this->render('stage-after-meal', ['order' => $order]);
     }
-    
+
     /**
      * Voting.
      * @param int $order
@@ -248,7 +248,7 @@ class SiteController extends Controller
         }
         return $this->goBack();
     }
-    
+
     /**
      * Unvoting.
      * @param int $order
@@ -283,7 +283,7 @@ class SiteController extends Controller
         }
         return $this->goBack();
     }
-    
+
     /**
      * Unorder.
      * @param int $order
@@ -321,7 +321,7 @@ class SiteController extends Controller
         }
         return $this->goBack();
     }
-    
+
     /**
      * Order the same.
      * @param int $food
@@ -341,7 +341,7 @@ class SiteController extends Controller
             $this->err('Termin głosowania upłynął!');
             return $this->goBack();
         }
-        
+
         $alreadyOrdered = OrderFood::findOne([
             'author_id' => Yii::$app->user->id,
             'order_id' => $chosenFood->order_id,
@@ -350,14 +350,14 @@ class SiteController extends Controller
             $this->err('Usuń najpierw swoje poprzednie zamówienie, aby je zmienić!');
             return $this->goBack();
         }
-        
+
         $same = new OrderFood();
         $same->author_id = Yii::$app->user->id;
         $same->order_id = $chosenFood->order_id;
         $same->restaurant_id = $chosenFood->restaurant_id;
         $same->code = $chosenFood->code;
         $same->screen = $chosenFood->screen;
-        
+
         if (!empty($same->screen)) {
             $hisDirectory = Yii::getAlias('@app/web/uploads') . '/' . $chosenFood->author_id;
             $myDirectory = Yii::getAlias('@app/web/uploads') . '/' . Yii::$app->user->id;
@@ -370,7 +370,7 @@ class SiteController extends Controller
                 return $this->goBack();
             }
         }
-        
+
         if ($same->save()) {
             $this->ok('Zamówienie zostało skopiowane!');
         } else {
@@ -378,7 +378,7 @@ class SiteController extends Controller
         }
         return $this->goBack();
     }
-    
+
     /**
      * Food history
      * @return string
@@ -393,7 +393,7 @@ class SiteController extends Controller
             'dataProvider' => $dataProvider,
         ]);
     }
-    
+
     /**
      * Restaurants
      * @return string
@@ -408,33 +408,33 @@ class SiteController extends Controller
             'dataProvider' => $dataProvider,
         ]);
     }
-    
+
 //    public function beforeAction($action)
 //    {
 //        if (parent::beforeAction($action) && isset($_SERVER['HTTP_USER_AGENT'])) {
 //            $ua = strtolower($_SERVER['HTTP_USER_AGENT']);
 //            if(stripos($ua,'android') !== false) {
-//                echo '<pre>██╗   ██╗ ██████╗ ██╗   ██╗                        
-//╚██╗ ██╔╝██╔═══██╗██║   ██║                        
-// ╚████╔╝ ██║   ██║██║   ██║                        
-//  ╚██╔╝  ██║   ██║██║   ██║                        
-//   ██║   ╚██████╔╝╚██████╔╝                        
-//   ╚═╝    ╚═════╝  ╚═════╝                         
-//                                                   
-//██╗  ██╗ █████╗ ██╗   ██╗███████╗                  
-//██║  ██║██╔══██╗██║   ██║██╔════╝                  
-//███████║███████║██║   ██║█████╗                    
-//██╔══██║██╔══██║╚██╗ ██╔╝██╔══╝                    
-//██║  ██║██║  ██║ ╚████╔╝ ███████╗                  
-//╚═╝  ╚═╝╚═╝  ╚═╝  ╚═══╝  ╚══════╝                  
-//                                                   
-//██████╗ ███████╗███████╗███╗   ██╗                 
-//██╔══██╗██╔════╝██╔════╝████╗  ██║                 
-//██████╔╝█████╗  █████╗  ██╔██╗ ██║                 
-//██╔══██╗██╔══╝  ██╔══╝  ██║╚██╗██║                 
-//██████╔╝███████╗███████╗██║ ╚████║                 
-//╚═════╝ ╚══════╝╚══════╝╚═╝  ╚═══╝                 
-//                                                   
+//                echo '<pre>██╗   ██╗ ██████╗ ██╗   ██╗
+//╚██╗ ██╔╝██╔═══██╗██║   ██║
+// ╚████╔╝ ██║   ██║██║   ██║
+//  ╚██╔╝  ██║   ██║██║   ██║
+//   ██║   ╚██████╔╝╚██████╔╝
+//   ╚═╝    ╚═════╝  ╚═════╝
+//
+//██╗  ██╗ █████╗ ██╗   ██╗███████╗
+//██║  ██║██╔══██╗██║   ██║██╔════╝
+//███████║███████║██║   ██║█████╗
+//██╔══██║██╔══██║╚██╗ ██╔╝██╔══╝
+//██║  ██║██║  ██║ ╚████╔╝ ███████╗
+//╚═╝  ╚═╝╚═╝  ╚═╝  ╚═══╝  ╚══════╝
+//
+//██████╗ ███████╗███████╗███╗   ██╗
+//██╔══██╗██╔════╝██╔════╝████╗  ██║
+//██████╔╝█████╗  █████╗  ██╔██╗ ██║
+//██╔══██╗██╔══╝  ██╔══╝  ██║╚██╗██║
+//██████╔╝███████╗███████╗██║ ╚████║
+//╚═════╝ ╚══════╝╚══════╝╚═╝  ╚═══╝
+//
 //██╗  ██╗ █████╗ ██╗  ██╗██╗  ██╗███████╗██████╗ ██╗
 //██║  ██║██╔══██╗╚██╗██╔╝╚██╗██╔╝██╔════╝██╔══██╗██║
 //███████║███████║ ╚███╔╝  ╚███╔╝ █████╗  ██║  ██║██║
@@ -442,8 +442,8 @@ class SiteController extends Controller
 //██║  ██║██║  ██║██╔╝ ██╗██╔╝ ██╗███████╗██████╔╝██╗
 //╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚═════╝ ╚═╝
 //                                                   </pre>';
-//                
-//                
+//
+//
 //                exit();
 //            }
 //        }
