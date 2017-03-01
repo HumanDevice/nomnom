@@ -8,10 +8,11 @@ use yii\helpers\Url;
     <td><?= Html::encode($model->author->short) ?></td>
     <?php if (!empty($model->code)): ?>
     <td><?= Html::encode($model->code) ?></td>
-    <?php endif ?>
+    <?php endif; ?>
     <?php if (!empty($model->screen)): ?>
     <td><?= Html::a(Url::to(['/uploads/' . $model->author_id . '/' . $model->screen], true), Url::to(['/uploads/' . $model->author_id . '/' . $model->screen], true)) ?></td>
-    <?php endif ?>
-    <?php if (empty($model->code)): ?><td></td><?php endif ?>
-    <?php if (empty($model->screen)): ?><td></td><?php endif ?>
+    <?php endif; ?>
+    <?php if (empty($model->code)): ?><td></td><?php endif; ?>
+    <?php if (empty($model->screen)): ?><td></td><?php endif; ?>
+    <td class="text-right"><?= Yii::$app->formatter->asCurrency($model->price, 'PLN') ?></td>
 </tr>
