@@ -21,7 +21,7 @@ $this->title = 'NomNomAdmin Saldo';
     </div>
 </div>
 
-<h3>Balans konta</h3>
+<h3>Balans konta <?= Html::encode($model->username) ?></h3>
 <div class="row">
     <div class="col-lg-3">
         <div class="form-group">
@@ -78,6 +78,7 @@ $this->title = 'NomNomAdmin Saldo';
         ],
         [
             'attribute' => 'food_id',
+            'format' => 'raw',
             'value' => function ($model) {
                 return empty($model->food_id)
                     ? null
