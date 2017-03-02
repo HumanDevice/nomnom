@@ -36,9 +36,11 @@ $this->title = 'NomNomAdmin Historia';
         [
             'class' => ActionColumn::class,
             'template' => '{view}',
-            'buttons' => function ($url) {
-                return Html::a('Podgląd zamówienia', $url, ['class' => 'btn btn-primary btn-xs']);
-            }
+            'buttons' => [
+                'view' => function ($url) {
+                    return Html::a('Podgląd zamówienia', $url, ['class' => 'btn btn-primary btn-xs']);
+                }
+            ],
         ],
     ]
 ]); ?>

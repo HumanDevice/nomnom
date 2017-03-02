@@ -41,7 +41,7 @@ class OrderFood extends ActiveRecord
      */
     public function behaviors()
     {
-        return [TimestampBehavior::class()];
+        return [TimestampBehavior::class];
     }
 
     /**
@@ -50,7 +50,7 @@ class OrderFood extends ActiveRecord
      */
     public function getAuthor()
     {
-        return $this->hasOne(User::class(), ['id' => 'author_id']);
+        return $this->hasOne(User::class, ['id' => 'author_id']);
     }
 
     /**
@@ -68,7 +68,7 @@ class OrderFood extends ActiveRecord
      */
     public function getOrder()
     {
-        return $this->hasOne(Order::class(), ['id' => 'order_id']);
+        return $this->hasOne(Order::class, ['id' => 'order_id']);
     }
 
     /**
@@ -77,7 +77,7 @@ class OrderFood extends ActiveRecord
      */
     public function getRestaurant()
     {
-        return $this->hasOne(Restaurant::class(), ['id' => 'restaurant_id']);
+        return $this->hasOne(Restaurant::class, ['id' => 'restaurant_id']);
     }
 
     /**
