@@ -18,6 +18,7 @@ use yii\db\ActiveRecord;
  * @property string $screen
  * @property string $price
  * @property int $with
+ * @property int $balanced
  * @property int $created_at
  * @property int $updated_at
  *

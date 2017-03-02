@@ -12,6 +12,7 @@ use app\models\OrderFood;
 use app\models\Restaurant;
 use app\models\RestaurantSearch;
 use app\models\StartForm;
+use app\models\User;
 use Yii;
 use yii\db\Query;
 use yii\filters\AccessControl;
@@ -199,7 +200,7 @@ class SiteController extends Controller
      */
     protected function stageAfterMeal(Order $order)
     {
-        if (Yii::$app->user->id == 1 && Yii::$app->request->post('food_id')) {
+        if (Yii::$app->user->id == User::BOOKKEEPER && Yii::$app->request->post('food_id')) {
             $food = OrderFood::findOne(Yii::$app->request->post('food_id'));
             if (empty($food)) {
                 $this->err('Nie znaleziono zamówienia!');

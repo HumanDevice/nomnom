@@ -30,16 +30,20 @@ use yii\helpers\Url;
             <i class="glyphicon glyphicon-edit"></i> edytuj
         </button>
         <?php if (empty($model->with) && $model->price > 20 || !empty($model->with) && $model->price > 40): ?>
-        <button class="btn btn-success btn-xs">
-            <?php
+        <?php
             if (empty($model->with)) {
                 $debet = $model->price - 20 + 2.5;
             } else {
                 $debet = $model->price - 40 + 2.5;
             }
-            ?>
-            <i class="glyphicon glyphicon-ok-sign"></i> potwierdź -<?= Yii::$app->formatter->asCurrency($debet, 'PLN') ?>
-        </button>
+        ?>
+        <?php if ($model->balanced): ?>
+        <button class="btn btn-default btn-xs"><i class="glyphicon glyphicon-ok-sign"></i> potwierdzone -<?= Yii::$app->formatter->asCurrency($debet, 'PLN') ?></button>
+        <?php else: ?>
+        <a href="<?= Url::to(['site/debet']) ?>" class="btn btn-success btn-xs" data-confirm="Czy na pewno odjąć -<?= Yii::$app->formatter->asCurrency($debet, 'PLN') ?> pracownikowi?">
+            <i class="glyphicon glyphicon-question-sign"></i> potwierdź -<?= Yii::$app->formatter->asCurrency($debet, 'PLN') ?>
+        </a>
+        <?php endif; ?>
         <?php endif; ?>
     </td>
     <?php endif; ?>
