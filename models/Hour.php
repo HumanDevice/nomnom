@@ -67,7 +67,7 @@ class Hour extends ActiveRecord
             'monday_odd' => 'Pn (N)',
             'monday_even' => 'Pn (P)',
             'tuesday_odd' => 'Wt (N)',
-            'tuesday_even' => 'Wt (p)',
+            'tuesday_even' => 'Wt (P)',
             'wednesday_odd' => 'Śr (N)',
             'wednesday_even' => 'Śr (P)',
             'thursday_odd' => 'Cz (N)',
