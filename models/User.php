@@ -31,7 +31,7 @@ use yii\web\IdentityInterface;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
-    const BOOKKEEPER = 19;
+    const BOOKKEEPER = [1, 19, 22];
 
     const ROLE_USER = 1;
     const ROLE_ADMIN = 2;

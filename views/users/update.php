@@ -13,10 +13,9 @@ $this->title = 'NomNomAdmin Użytkownicy';
 <div class="row">
     <div class="col-lg-12">
         <div class="form-group">
-            <a href="<?= Url::to(['users/index']) ?>" class="btn btn-default"><span class="glyphicon glyphicon-list"></span> Lista użytkowników</a>
             <?php if (!$model->isNewRecord): ?>
-            <a href="<?= Url::to(['users/view', 'id' => $model->id]) ?>" class="btn btn-primary"><span class="glyphicon glyphicon-eye-open"></span> Podgląd użytkownika</a>
-            <a href="<?= Url::to(['users/delete', 'id' => $model->id]) ?>" class="btn btn-danger" data-confirm="Czy na pewno chcesz usunąć tego użytkownika?">
+            <a href="<?= Url::to(['users/view', 'id' => $model->id]) ?>" class="btn btn-primary btn-xs"><span class="glyphicon glyphicon-eye-open"></span> Podgląd użytkownika</a>
+            <a href="<?= Url::to(['users/delete', 'id' => $model->id]) ?>" class="btn btn-danger btn-xs" data-confirm="Czy na pewno chcesz usunąć tego użytkownika?">
                 <span class="glyphicon glyphicon-trash"></span> Usuń użytkownika
             </a>
             <?php endif ?>

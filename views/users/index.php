@@ -52,12 +52,19 @@ $this->title = 'NomNomAdmin Użytkownicy';
             }
         ],
         [
-            'class' => ActionColumn::className(),
-            'template' => '{view} {password} {update} {delete}',
+            'class' => ActionColumn::class,
+            'contentOptions' => ['class' => 'text-right'],
+            'template' => '{view}&nbsp;&nbsp;{update}&nbsp;&nbsp;{balance}&nbsp;&nbsp;{password}&nbsp;&nbsp;{delete}',
             'buttons' => [
+                'balance' => function ($url, $model, $key) {
+                    return Html::a(Html::tag('span', '', ['class' => 'glyphicon glyphicon-usd']), $url, ['data-pjax' => 0]);
+                },
                 'password' => function ($url, $model, $key) {
-                    return Html::a(Html::tag('span', '', ['class' => 'glyphicon glyphicon-retweet']), $url);
+                    return Html::a(Html::tag('span', '', ['class' => 'glyphicon glyphicon-retweet']), $url, ['data-pjax' => 0]);
                 }
+            ],
+            'visibleButtons' => [
+                'balance' => in_array(Yii::$app->user->id, User::BOOKKEEPER)
             ]
         ],
     ]

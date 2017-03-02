@@ -12,7 +12,7 @@ $this->title = 'NomNom';
 
 /* @var $order Order */
 
-if (Yii::$app->user->id == User::BOOKKEEPER) {
+if (in_array(Yii::$app->user->id, User::BOOKKEEPER)) {
     $this->registerJs(<<<JS
 $("#edit").on("show.bs.modal", function(e) {
     var button = $(e.relatedTarget);
@@ -116,7 +116,7 @@ JS
 ]) ?>
 <?php endif; ?>
 
-<?php if (Yii::$app->user->id == User::BOOKKEEPER): ?>
+<?php if (in_array(Yii::$app->user->id, User::BOOKKEEPER)): ?>
 <?php Modal::begin([
     'header' => '<h4 class="modal-title">Edytuj zamówienie</h4>',
     'options' => ['id' => 'edit'],

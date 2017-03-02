@@ -2,8 +2,11 @@
 
 namespace app\controllers;
 
+use app\models\Balance;
+use app\models\BalanceSearch;
 use app\models\User;
 use app\models\UserSearch;
+use Exception;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -11,7 +14,7 @@ use yii\web\Controller;
 class UsersController extends Controller
 {
     use FlashTrait;
-    
+
     /**
      * @inheritdoc
      */
@@ -62,10 +65,10 @@ class UsersController extends Controller
             $this->ok('Użytkownik dodany.');
             return $this->redirect(['users/index']);
         }
-        
+
         return $this->render('update', ['model' => $model]);
     }
-    
+
     /**
      * Edit user
      * @param int $id
@@ -86,10 +89,10 @@ class UsersController extends Controller
             $this->ok('Użytkownik uaktualniony.');
             return $this->redirect(['users/index']);
         }
-        
+
         return $this->render('update', ['model' => $model]);
     }
-    
+
     /**
      * Delete user
      * @param int $id
@@ -116,7 +119,7 @@ class UsersController extends Controller
         }
         return $this->redirect(['users/index']);
     }
-    
+
     /**
      * View user
      * @param int $id
@@ -129,10 +132,10 @@ class UsersController extends Controller
             $this->err('Coś nie tak z ID użytkownika.');
             return $this->redirect(['users/index']);
         }
-        
+
         return $this->render('view', ['model' => $model]);
     }
-    
+
     /**
      * Prompts for reset user's password
      * @param int $id
@@ -151,7 +154,7 @@ class UsersController extends Controller
         }
         return $this->render('password', ['model' => $model]);
     }
-    
+
     /**
      * Reset user's password
      * @param int $id
@@ -176,5 +179,63 @@ class UsersController extends Controller
             $this->err('Błąd przy resetowaniu!');
         }
         return $this->redirect(['users/index']);
+    }
+
+    /**
+     * User balance
+     * @param int $id
+     * @return string
+     */
+    public function actionBalance($id)
+    {
+        if (!in_array(Yii::$app->user->id, User::BOOKKEEPER)) {
+            $this->err('Tylko księgowość ma tu dostęp.');
+            return $this->redirect(['users/index']);
+        }
+        $model = User::findOne(['id' => $id]);
+        if (empty($model)) {
+            $this->err('Coś nie tak z ID użytkownika.');
+            return $this->redirect(['users/index']);
+        }
+
+        $topup = Yii::$app->request->post('value');
+        if ($topup) {
+            if (!is_numeric($topup) || $topup < 0) {
+                $this->err('Nieprawidłowa kwota!');
+                return $this->redirect(['users/balance', 'id' => $model->id]);
+            }
+            $trans = Yii::$app->db->beginTransaction();
+            try {
+                $balance = new Balance;
+                $balance->operator_id = Yii::$app->user->id;
+                $balance->food_id = null;
+                $balance->user_id = $model->id;
+                $balance->value = $topup;
+                if (!$balance->save()) {
+                    throw new Exception('Account topping error!');
+                }
+                $model->balance = $model->balance + $topup;
+                if (!$model->save()) {
+                    throw new Exception('Account topping error!');
+                }
+                $trans->commit();
+                $this->ok('Konto zostało zasilone.');
+                return $this->redirect(['users/balance', 'id' => $model->id]);
+            } catch (Exception $exc) {
+                $trans->rollBack();
+                Yii::error($exc->getMessage());
+            }
+            $this->err('Nie udało się zasilić konta!');
+            return $this->redirect(['users/balance', 'id' => $model->id]);
+        }
+
+        $searchModel = new BalanceSearch;
+        $dataProvider = $searchModel->search($model->id, Yii::$app->request->queryParams);
+
+        return $this->render('balance', [
+            'model' => $model,
+            'searchModel'  => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
     }
 }

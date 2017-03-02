@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Balance;
 use app\models\FoodForm;
 use app\models\FoodSearch;
 use app\models\HistorySearch;
@@ -13,6 +14,7 @@ use app\models\Restaurant;
 use app\models\RestaurantSearch;
 use app\models\StartForm;
 use app\models\User;
+use Exception;
 use Yii;
 use yii\db\Query;
 use yii\filters\AccessControl;
@@ -200,7 +202,7 @@ class SiteController extends Controller
      */
     protected function stageAfterMeal(Order $order)
     {
-        if (Yii::$app->user->id == User::BOOKKEEPER && Yii::$app->request->post('food_id')) {
+        if (in_array(Yii::$app->user->id, User::BOOKKEEPER) && Yii::$app->request->post('food_id')) {
             $food = OrderFood::findOne(Yii::$app->request->post('food_id'));
             if (empty($food)) {
                 $this->err('Nie znaleziono zamówienia!');
@@ -421,6 +423,67 @@ class SiteController extends Controller
             'searchModel'  => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
+    }
+
+    /**
+     * Takes money from account.
+     * @param int $id
+     */
+    public function actionDebet($id)
+    {
+        if (!in_array(Yii::$app->user->id, User::BOOKKEEPER)) {
+            $this->err('Tylko księgowość ma tu dostęp!');
+            return $this->redirect(['site/index']);
+        }
+        $food = OrderFood::findOne($id);
+        if (empty($food)) {
+            $this->err('Nie znaleziono zamówienia o tym ID!');
+            return $this->redirect(['site/index']);
+        }
+        if ($food->balanced) {
+            $this->err('Zamówienie zostało już rozliczone!');
+            return $this->redirect(['site/index']);
+        }
+        if (empty($food->with) && $food->price > 20 || !empty($food->with) && $food->price > 40) {
+            if (empty($food->with)) {
+                $debet = number_format($food->price - 20 + 2.5, 2);
+            } else {
+                $debet = number_format($food->price - 40 + 2.5, 2);
+            }
+            if ($food->author->balance < $debet) {
+                $this->err('Pracownik nie ma wymaganej kwote na koncie!');
+                return $this->redirect(['site/index']);
+            }
+            $trans = Yii::$app->db->beginTransaction();
+            try {
+                $balance = new Balance;
+                $balance->operator_id = Yii::$app->user->id;
+                $balance->food_id = $food->id;
+                $balance->user_id = $food->author->id;
+                $balance->value = -$debet;
+                if (!$balance->save()) {
+                    throw new Exception('Balance adding error!');
+                }
+                $food->author->balance = $food->author->balance - $debet;
+                if (!$food->author->save()) {
+                    throw new Exception('Account charging error!');
+                }
+                $food->balanced = 1;
+                if (!$food->save()) {
+                    throw new Exception('Order balancing error!');
+                }
+                $trans->commit();
+                $this->ok('Konto zostało obciążone.');
+                return $this->redirect(['site/index']);
+            } catch (Exception $exc) {
+                $trans->rollBack();
+                Yii::error($exc->getMessage());
+                $this->err('Błąd podczas obciążania konta!');
+                return $this->redirect(['site/index']);
+            }
+        }
+        $this->err('Kwota zamówienia nie wymaga rozliczenia!');
+        return $this->redirect(['site/index']);
     }
 
     /**
