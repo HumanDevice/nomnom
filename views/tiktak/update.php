@@ -11,7 +11,7 @@ $this->registerJs(<<<JS
 $(".copy").click(function(e) {
     e.preventDefault();
     var position = $(this).data("pos");
-    var content = $(this).closest(SELEKTOR GRUPY).find("input").val();
+    var content = $(this).closest(".form-group").find("input").val();
     $("input[type=text]").each(function() {
         if ($(this).data("pos") >= position) {
             $(this).val(content);
@@ -34,12 +34,12 @@ JS
         <?php $form = ActiveForm::begin([
             'options' => ['class' => 'form-horizontal'],
             'fieldConfig' => [
-                'template' => "{label}\n<div class=\"col-lg-4\">{input}</div>\n<div class=\"col-lg-6\">{error}</div>",
+                'template' => "{label}\n<div class=\"col-lg-4\">{input}</div>\n<div class=\"col-lg-6\">{hint}</div>\n<div class=\"col-lg-6\">{error}</div>",
                 'labelOptions' => ['class' => 'col-lg-2 control-label'],
             ],
         ]); ?>
             <?= $form->field($model, 'vacation')->textInput()->hint('Zostaw puste albo podaj datę do kiedy jesteś na urlopie.') ?>
-            <p>TYDZIEŃ NIEPARZYSTY</p>
+            <p>TYDZIEŃ NIEPARZYSTY</p><hr>
             <?= $form->field($model, 'monday_odd')->textInput(['autofocus' => true])
                 ->hint(Html::button('<i class="glyphicon glyphicon-download-alt"></i> skopiuj poniżej', ['data-pos' => 1, 'class' => 'copy btn btn-default btn-xs'])) ?>
             <?= $form->field($model, 'tuesday_odd')->textInput(['data-pos' => 1])
@@ -50,7 +50,7 @@ JS
                 ->hint(Html::button('<i class="glyphicon glyphicon-download-alt"></i> skopiuj poniżej', ['data-pos' => 4, 'class' => 'copy btn btn-default btn-xs'])) ?>
             <?= $form->field($model, 'friday_odd')->textInput(['data-pos' => 4])
                 ->hint(Html::button('<i class="glyphicon glyphicon-download-alt"></i> skopiuj poniżej', ['data-pos' => 5, 'class' => 'copy btn btn-default btn-xs'])) ?>
-            <p>TYDZIEŃ PARZYSTY</p>
+            <p>TYDZIEŃ PARZYSTY</p><hr>
             <?= $form->field($model, 'monday_even')->textInput(['data-pos' => 5])
                 ->hint(Html::button('<i class="glyphicon glyphicon-download-alt"></i> skopiuj poniżej', ['data-pos' => 6, 'class' => 'copy btn btn-default btn-xs'])) ?>
             <?= $form->field($model, 'tuesday_even')->textInput(['data-pos' => 6])

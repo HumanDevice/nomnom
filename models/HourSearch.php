@@ -45,7 +45,7 @@ class HourSearch extends Hour
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'sort' => [
-                'defaultOrder' => ['u.username' => SORT_ASC]
+                'defaultOrder' => ['username' => SORT_ASC]
             ]
         ]);
         $dataProvider->sort->attributes['username'] = [

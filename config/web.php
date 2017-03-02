@@ -11,7 +11,7 @@ $config = [
     'components' => [
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
-            'cookieValidationKey' => '',
+            'cookieValidationKey' => 'qPusFpsXU-6-4dYc_jiKS-Zg8PY3DYWt',
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -54,12 +54,12 @@ $config = [
             'class' => 'app\components\HipChat',
             'mode' => 'test',
             'prod' => [
-                'room' => 1,
-                'token' => ''
+                'room' => 765869,
+                'token' => 'ruC1LAqGbMZy4rOw2d5gT0PvFsJ7xzdISSqGwzvY'
             ],
             'test' => [
-                'room' => 2,
-                'token' => ''
+                'room' => 3147500,
+                'token' => 'vwqKCZFW690NcYpIByebDAMOawy0rHGUX2OGIT5i'
             ],
         ],
     ],

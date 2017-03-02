@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Hour;
 use app\models\HourSearch;
 use Yii;
 use yii\filters\AccessControl;

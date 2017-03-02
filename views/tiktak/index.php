@@ -14,10 +14,10 @@ var week_even = true;
 $("#week_odd").click(function(e) {
     e.preventDefault();
     if (week_odd) {
-        $(this).addClass("text-muted").html("<i class=\"glyphicon glyphicon-eye-open\"></i> Pokaż tydzień nieparzysty");
+        $(this).removeClass("btn-info").addClass("btn-default").html("<i class=\"glyphicon glyphicon-eye-open\"></i> Pokaż tydzień nieparzysty");
         $(".week_odd").hide();
     } else {
-        $(this).removeClass("text-muted").html("<i class=\"glyphicon glyphicon-eye-close\"></i> Ukryj tydzień nieparzysty");
+        $(this).addClass("btn-info").removeClass("btn-default").html("<i class=\"glyphicon glyphicon-eye-close\"></i> Ukryj tydzień nieparzysty");
         $(".week_odd").show();
     }
     week_odd = !week_odd;
@@ -25,10 +25,10 @@ $("#week_odd").click(function(e) {
 $("#week_even").click(function(e) {
     e.preventDefault();
     if (week_even) {
-        $(this).addClass("text-muted").html("<i class=\"glyphicon glyphicon-eye-open\"></i> Pokaż tydzień parzysty");
+        $(this).removeClass("btn-warning").addClass("btn-default").html("<i class=\"glyphicon glyphicon-eye-open\"></i> Pokaż tydzień parzysty");
         $(".week_even").hide();
     } else {
-        $(this).removeClass("text-muted").html("<i class=\"glyphicon glyphicon-eye-close\"></i> Ukryj tydzień parzysty");
+        $(this).addClass("btn-warning").removeClass("btn-default").html("<i class=\"glyphicon glyphicon-eye-close\"></i> Ukryj tydzień parzysty");
         $(".week_even").show();
     }
     week_even = !week_even;
@@ -83,51 +83,61 @@ JS
             'attribute' => 'monday_odd',
             'headerOptions' => ['class' => 'text-center week_odd', 'style' => 'background-color:#c7dcef'],
             'contentOptions' => ['class' => 'text-center week_odd', 'style' => 'background-color:#c7dcef'],
+            'filterOptions' => ['class' => 'week_odd', 'style' => 'background-color:#c7dcef'],
         ],
         [
             'attribute' => 'tuesday_odd',
             'headerOptions' => ['class' => 'text-center week_odd', 'style' => 'background-color:#c7dcef'],
             'contentOptions' => ['class' => 'text-center week_odd', 'style' => 'background-color:#c7dcef'],
+            'filterOptions' => ['class' => 'week_odd', 'style' => 'background-color:#c7dcef'],
         ],
         [
             'attribute' => 'wednesday_odd',
             'headerOptions' => ['class' => 'text-center week_odd', 'style' => 'background-color:#c7dcef'],
             'contentOptions' => ['class' => 'text-center week_odd', 'style' => 'background-color:#c7dcef'],
+            'filterOptions' => ['class' => 'week_odd', 'style' => 'background-color:#c7dcef'],
         ],
         [
             'attribute' => 'thursday_odd',
             'headerOptions' => ['class' => 'text-center week_odd', 'style' => 'background-color:#c7dcef'],
             'contentOptions' => ['class' => 'text-center week_odd', 'style' => 'background-color:#c7dcef'],
+            'filterOptions' => ['class' => 'week_odd', 'style' => 'background-color:#c7dcef'],
         ],
         [
             'attribute' => 'friday_odd',
             'headerOptions' => ['class' => 'text-center week_odd', 'style' => 'background-color:#c7dcef'],
             'contentOptions' => ['class' => 'text-center week_odd', 'style' => 'background-color:#c7dcef'],
+            'filterOptions' => ['class' => 'week_odd', 'style' => 'background-color:#c7dcef'],
         ],
         [
             'attribute' => 'monday_even',
             'headerOptions' => ['class' => 'text-center week_even', 'style' => 'background-color:#efe2c7'],
             'contentOptions' => ['class' => 'text-center week_even', 'style' => 'background-color:#efe2c7'],
+            'filterOptions' => ['class' => 'week_even', 'style' => 'background-color:#efe2c7'],
         ],
         [
             'attribute' => 'tuesday_even',
             'headerOptions' => ['class' => 'text-center week_even', 'style' => 'background-color:#efe2c7'],
             'contentOptions' => ['class' => 'text-center week_even', 'style' => 'background-color:#efe2c7'],
+            'filterOptions' => ['class' => 'week_even', 'style' => 'background-color:#efe2c7'],
         ],
         [
             'attribute' => 'wednesday_even',
             'headerOptions' => ['class' => 'text-center week_even', 'style' => 'background-color:#efe2c7'],
             'contentOptions' => ['class' => 'text-center week_even', 'style' => 'background-color:#efe2c7'],
+            'filterOptions' => ['class' => 'week_even', 'style' => 'background-color:#efe2c7'],
         ],
         [
             'attribute' => 'thursday_even',
             'headerOptions' => ['class' => 'text-center week_even', 'style' => 'background-color:#efe2c7'],
             'contentOptions' => ['class' => 'text-center week_even', 'style' => 'background-color:#efe2c7'],
+            'filterOptions' => ['class' => 'week_even', 'style' => 'background-color:#efe2c7'],
         ],
         [
             'attribute' => 'friday_even',
             'headerOptions' => ['class' => 'text-center week_even', 'style' => 'background-color:#efe2c7'],
             'contentOptions' => ['class' => 'text-center week_even', 'style' => 'background-color:#efe2c7'],
+            'filterOptions' => ['class' => 'week_even', 'style' => 'background-color:#efe2c7'],
         ],
         [
             'attribute' => 'vacation',

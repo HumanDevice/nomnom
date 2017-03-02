@@ -27,12 +27,12 @@ $config = [
             'class' => 'app\components\HipChat',
             'mode' => 'prod',
             'prod' => [
-                'room' => 1,
-                'token' => ''
+                'room' => 765869,
+                'token' => 'ruC1LAqGbMZy4rOw2d5gT0PvFsJ7xzdISSqGwzvY'
             ],
             'test' => [
-                'room' => 2,
-                'token' => ''
+                'room' => 3147500,
+                'token' => 'vwqKCZFW690NcYpIByebDAMOawy0rHGUX2OGIT5i'
             ],
         ],
     ],
