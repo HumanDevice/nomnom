@@ -93,7 +93,7 @@ JS
                 <?= Html::a('LINK', $order->restaurant->url, ['class' => 'btn btn-danger btn-xs', 'target' => 'restaurant']) ?>
                 <?php endif ?>
                 <?php if (!empty($order->restaurant->screen)): ?>
-                <?= Html::a('ZDJĘCIE', '/uploads/menu/' . $order->restaurant->screen, ['class' => 'btn btn-danger', 'target' => 'menu']) ?>
+                <?= Html::a('ZDJĘCIE', '/uploads/menu/' . $order->restaurant->screen, ['class' => 'btn btn-danger btn-xs', 'target' => 'menu']) ?>
                 <?php endif ?><br>
                 <?php if ($order->restaurant->max > 1): ?>
                 <small>Max <?= $order->restaurant->max ?> restauracj<?= $order->restaurant->max == 1 ? 'a' : 'e' ?> z tego miejsca</small>
@@ -109,7 +109,7 @@ JS
                 <?= Html::a('LINK', $order->restaurant2->url, ['class' => 'btn btn-danger btn-xs', 'target' => 'restaurant2']) ?>
                 <?php endif ?>
                 <?php if (!empty($order->restaurant2->screen)): ?>
-                <?= Html::a('ZDJĘCIE', '/uploads/menu/' . $order->restaurant2->screen, ['class' => 'btn btn-danger', 'target' => 'menu2']) ?>
+                <?= Html::a('ZDJĘCIE', '/uploads/menu/' . $order->restaurant2->screen, ['class' => 'btn btn-danger btn-xs', 'target' => 'menu2']) ?>
                 <?php endif ?><br>
                 <?php if ($order->restaurant2->max > 1): ?>
                 <small>Max <?= $order->restaurant2->max ?> restauracj<?= $order->restaurant2->max == 1 ? 'a' : 'e' ?> z tego miejsca</small>

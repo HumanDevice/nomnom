@@ -70,7 +70,7 @@ JS
                 <?= Html::a('LINK', $order->restaurant2->url, ['class' => 'btn btn-danger btn-xs', 'target' => 'restaurant2']) ?>
                 <?php endif; ?>
                 <?php if (!empty($order->restaurant2->screen)): ?>
-                <?= Html::a('ZDJĘCIE', '/uploads/menu/' . $order->restaurant2->screen, ['class' => 'btn btn-danger', 'target' => 'menu2']) ?>
+                <?= Html::a('ZDJĘCIE', '/uploads/menu/' . $order->restaurant2->screen, ['class' => 'btn btn-danger btn-xs', 'target' => 'menu2']) ?>
                 <?php endif; ?><br>
                 <?php if ($order->restaurant2->max > 1): ?>
                 <small>Max <?= $order->restaurant2->max ?> restauracj<?= $order->restaurant2->max == 1 ? 'a' : 'e' ?> z tego miejsca</small>
