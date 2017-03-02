@@ -46,7 +46,8 @@ class HourSearch extends Hour
             'query' => $query,
             'sort' => [
                 'defaultOrder' => ['username' => SORT_ASC]
-            ]
+            ],
+            'pagination' => false
         ]);
         $dataProvider->sort->attributes['username'] = [
             'asc' => ['u.username' => SORT_ASC],

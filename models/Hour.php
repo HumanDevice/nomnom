@@ -75,6 +75,8 @@ class Hour extends ActiveRecord
             'friday_odd' => 'Pt (N)',
             'friday_even' => 'Pt (P)',
             'vacation' => 'Urlop',
+            'username' => 'Pracownik',
+            'division' => 'Grupa',
         ];
     }
 

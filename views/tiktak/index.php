@@ -48,6 +48,14 @@ JS
 <div class="row">
     <div class="col-lg-12">
         <div class="form-group">
+            <i class="glyphicon glyphicon-alert"></i> W podanych tu dniach i godzinach spodziewamy się zastać daną osobę (w siedzibie firmy albo przynajmniej online z możliwością
+            pracy zdalnej), zatem prosimy o aktualizowanie godzin na bieżąco i bycie punktualnym.
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="form-group">
             Aktualny tydzień wg <a href="http://jakitydzien.pl" target="jakitydzien">jakitydzien.pl</a>: <span class="label label-primary"><?= $week ?></span>
         </div>
     </div>
