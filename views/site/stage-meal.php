@@ -90,23 +90,33 @@ JS
             <h3>
                 <strong>1. <?= Html::encode($order->restaurant->name) ?></strong>:
                 <?php if (!empty($order->restaurant->url)): ?>
-                <?= Html::a('LINK DO MENU', $order->restaurant->url, ['class' => 'btn btn-danger', 'target' => 'restaurant']) ?>
+                <?= Html::a('LINK', $order->restaurant->url, ['class' => 'btn btn-danger btn-xs', 'target' => 'restaurant']) ?>
                 <?php endif ?>
                 <?php if (!empty($order->restaurant->screen)): ?>
-                <?= Html::a('ZDJĘCIE MENU', '/uploads/menu/' . $order->restaurant->screen, ['class' => 'btn btn-danger', 'target' => 'menu']) ?>
-                <?php endif ?>
+                <?= Html::a('ZDJĘCIE', '/uploads/menu/' . $order->restaurant->screen, ['class' => 'btn btn-danger', 'target' => 'menu']) ?>
+                <?php endif ?><br>
+                <?php if ($order->restaurant->max > 1): ?>
                 <small>Max <?= $order->restaurant->max ?> restauracj<?= $order->restaurant->max == 1 ? 'a' : 'e' ?> z tego miejsca</small>
+                <?php endif; ?>
+                <?php if ($order->restaurant->phone): ?>
+                <small>Telefon: <?= $order->restaurant->phone ?></small>
+                <?php endif; ?>
             </h3>
             <?php if (!empty($order->restaurant2)): ?>
             <h3>
                 <strong>2. <?= Html::encode($order->restaurant2->name) ?></strong>:
                 <?php if (!empty($order->restaurant2->url)): ?>
-                <?= Html::a('LINK DO MENU', $order->restaurant2->url, ['class' => 'btn btn-danger', 'target' => 'restaurant2']) ?>
+                <?= Html::a('LINK', $order->restaurant2->url, ['class' => 'btn btn-danger btn-xs', 'target' => 'restaurant2']) ?>
                 <?php endif ?>
                 <?php if (!empty($order->restaurant2->screen)): ?>
-                <?= Html::a('ZDJĘCIE MENU', '/uploads/menu/' . $order->restaurant2->screen, ['class' => 'btn btn-danger', 'target' => 'menu2']) ?>
-                <?php endif ?>
+                <?= Html::a('ZDJĘCIE', '/uploads/menu/' . $order->restaurant2->screen, ['class' => 'btn btn-danger', 'target' => 'menu2']) ?>
+                <?php endif ?><br>
+                <?php if ($order->restaurant2->max > 1): ?>
                 <small>Max <?= $order->restaurant2->max ?> restauracj<?= $order->restaurant2->max == 1 ? 'a' : 'e' ?> z tego miejsca</small>
+                <?php endif; ?>
+                <?php if ($order->restaurant2->phone): ?>
+                <small>Telefon: <?= $order->restaurant->phone ?></small>
+                <?php endif; ?>
             </h3>
             <?php endif ?>
             <hr>
@@ -117,26 +127,38 @@ JS
 <?php $form = ActiveForm::begin(); ?>
 <div class="row">
     <div class="col-lg-12">
-        <?php if (!empty($order->restaurant2)): ?>
-        <?= $form->field($model, 'restaurant')->radioList([
-            $order->restaurant->id => $order->restaurant->name,
-            $order->restaurant2->id => $order->restaurant2->name,
-        ]) ?>
-        <?php else: ?>
-        <?= Html::activeHiddenInput($model, 'restaurant') ?>
-        <?php endif ?>
-        <?= $form->field($model, 'code')->textInput(['autofocus' => true])->hint('W przypadku Manufaktury podajemy zamówienie w kolejności: ZUPA, DRUGIE DANIE, SAŁATKI') ?>
-        <?php /*= $form->field($model, 'screen')->fileInput()*/ ?>
-        <?= $form->field($model, 'with')->dropDownList([0 => '-'] + FoodForm::withList()) ?>
-        <?= $form->field($model, 'price')->widget(MaskedInput::class, ['mask' => '99.99'])->hint('Proszę pamiętać o doliczeniu ewentualnego kosztu opakowania.') ?>
-        <p>Aktualne saldo: <strong><?= Yii::$app->formatter->asCurrency($balance, 'PLN') ?></strong><br>
-        <?php
+        <div class="row">
+            <div class="col-lg-9">
+                <?php if (!empty($order->restaurant2)): ?>
+                <?= $form->field($model, 'restaurant')->radioList([
+                    $order->restaurant->id => $order->restaurant->name,
+                    $order->restaurant2->id => $order->restaurant2->name,
+                ]) ?>
+                <?php else: ?>
+                <?= Html::activeHiddenInput($model, 'restaurant') ?>
+                <?php endif ?>
+            </div>
+            <div class="col-lg-3 text-right">
+                <?= $form->field($model, 'with')->dropDownList([0 => '-'] + FoodForm::withList(), ['id' => 'with']) ?>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-9">
+                <?= $form->field($model, 'code')->textInput(['autofocus' => true])->hint('W przypadku Manufaktury podajemy zamówienie w kolejności: ZUPA, DRUGIE DANIE, SAŁATKI') ?>
+                <?php /*= $form->field($model, 'screen')->fileInput()*/ ?>
+            </div>
+            <div class="col-lg-3 text-right">
+                <?= $form->field($model, 'price')->widget(MaskedInput::class, ['mask' => '99.99'])->hint('Proszę pamiętać o doliczeniu ewentualnego kosztu opakowania.') ?>
+            </div>
+        </div>
+                    <?php
         $balance = Yii::$app->user->identity->balance;
         $max = $balance - 2.5 > 0 ? $balance + 20 - 2.5 : 20;
         if ($max > 99.99) {
             $max = 99.99;
         }
         ?>
+        <p>Aktualne saldo: <strong><?= Yii::$app->formatter->asCurrency($balance, 'PLN') ?></strong><br>
         Powyższa kwota pozwala jednorazowo na zamówienie o łącznej wartości <?= Yii::$app->formatter->asCurrency($max, 'PLN') ?></p>
     </div>
 </div>
@@ -152,7 +174,7 @@ JS
 <div class="row">
     <div class="col-lg-12">
         <div class="alert alert-success">
-            <a href="<?= Url::to(['site/unorder', 'order' => $order->id]) ?>" class="btn btn-danger btn-lg pull-right" data-confirm="Czy na pewno chcesz usunąć zamówienie?">Usuń zamówienie</a>
+            <a href="<?= Url::to(['site/unorder', 'order' => $order->id]) ?>" class="btn btn-danger pull-right" data-confirm="Czy na pewno chcesz usunąć zamówienie?">Usuń zamówienie</a>
             <strong>Moje zamówienie na kwotę <span class="label label-danger"><?= Yii::$app->formatter->asCurrency($ordered->price, 'PLN') ?></span></strong>:<br><br>
             <strong>Restauracja</strong>: <?= Html::encode($ordered->restaurant->name) ?>
             <?php if (!empty($ordered->code)): ?>

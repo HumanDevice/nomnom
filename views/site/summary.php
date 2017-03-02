@@ -1,11 +1,12 @@
 <?php
 
+use app\models\User;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
 ?>
 <tr>
-    <td><?= Html::encode($model->author->short) ?></td>
+    <td><?= Html::encode($model->author->short) ?><?= !empty($model->with) ? ' + ' . $model->withOther->short : '' ?></td>
     <?php if (!empty($model->code)): ?>
     <td><?= Html::encode($model->code) ?></td>
     <?php endif; ?>
@@ -15,4 +16,31 @@ use yii\helpers\Url;
     <?php if (empty($model->code)): ?><td></td><?php endif; ?>
     <?php if (empty($model->screen)): ?><td></td><?php endif; ?>
     <td class="text-right"><?= Yii::$app->formatter->asCurrency($model->price, 'PLN') ?></td>
+    <?php if (Yii::$app->user->id == User::BOOKKEEPER): ?>
+    <td class="text-right">
+        <button
+            class="btn btn-primary btn-xs"
+            data-toggle="modal"
+            data-target="#edit"
+            data-id="<?= $model->id ?>"
+            data-who="<?= Html::encode($model->author->short) ?><?= !empty($model->with) ? ' + ' . $model->withOther->short : '' ?>"
+            data-code="<?= Html::encode($model->code) ?>"
+            data-price="<?= Html::encode($model->price) ?>"
+            data-credit="<?= $model->author->balance ?>">
+            <i class="glyphicon glyphicon-edit"></i> edytuj
+        </button>
+        <?php if (empty($model->with) && $model->price > 20 || !empty($model->with) && $model->price > 40): ?>
+        <button class="btn btn-success btn-xs">
+            <?php
+            if (empty($model->with)) {
+                $debet = $model->price - 20 + 2.5;
+            } else {
+                $debet = $model->price - 40 + 2.5;
+            }
+            ?>
+            <i class="glyphicon glyphicon-ok-sign"></i> potwierdź -<?= Yii::$app->formatter->asCurrency($debet, 'PLN') ?>
+        </button>
+        <?php endif; ?>
+    </td>
+    <?php endif; ?>
 </tr>

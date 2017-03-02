@@ -17,7 +17,7 @@ class FoodForm extends Model
     public $restaurant;
     public $code;
     public $screen;
-    public $price = 0;
+    public $price = '00.00';
     public $with = 0;
 
     /**
@@ -26,8 +26,8 @@ class FoodForm extends Model
     public function rules()
     {
         $balance = Yii::$app->user->identity->balance;
-        $max = $balance - 2.5 ? $balance - 2.5 + 20: 20;
-        $max2 = $balance - 2.5 ? $balance - 2.5 + 40: 40;
+        $max = $balance - 2.5 > 0 ? $balance - 2.5 + 20: 20;
+        $max2 = $balance - 2.5 > 0 ? $balance - 2.5 + 40: 40;
         if ($max > 99.99) {
             $max = 99.99;
         }

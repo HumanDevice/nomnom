@@ -199,6 +199,22 @@ class SiteController extends Controller
      */
     protected function stageAfterMeal(Order $order)
     {
+        if (Yii::$app->user->id == 1 && Yii::$app->request->post('food_id')) {
+            $food = OrderFood::findOne(Yii::$app->request->post('food_id'));
+            if (empty($food)) {
+                $this->err('Nie znaleziono zamówienia!');
+                return $this->goBack();
+            }
+            $food->code = Yii::$app->request->post('code');
+            $food->price = Yii::$app->request->post('price');
+            if (!$food->save()) {
+                $this->err('Błąd zapisu zamówienia!');
+            } else {
+                $this->ok('Zamówienie poprawione.');
+            }
+            return $this->goBack();
+        }
+
         return $this->render('stage-after-meal', ['order' => $order]);
     }
 

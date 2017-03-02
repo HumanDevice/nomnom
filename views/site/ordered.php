@@ -18,10 +18,11 @@ if (!isset($ordered)) {
                 <?= Html::encode($model->author->username) ?>
             </div>
             <div class="panel-body">
-                <strong>Restauracja</strong>: <?= Html::encode($model->restaurant->name) ?><br>
+                <strong>Restauracja</strong>: <?= Html::encode($model->restaurant->name) ?>
+                <strong class="pull-right">Kwota: <?= Yii::$app->formatter->asCurrency($model->price, 'PLN') ?></strong>
+                <br>
                 <?php if (!empty($model->code)): ?>
                 <p><?= Html::encode($model->code) ?></p>
-                <p><strong>Kwota: <?= Yii::$app->formatter->asCurrency($model->price, 'PLN') ?></strong></p>
                 <?php endif ?>
                 <?php if (!empty($model->screen)): ?>
                 <?= Html::img('/uploads/' . $model->author_id . '/' . $model->screen, ['class' => 'img-thumbnail img-responsive']) ?>

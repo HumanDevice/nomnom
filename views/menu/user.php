@@ -13,7 +13,7 @@ if (!isset($active)) {
                 <a href="<?= Url::to(['site/index']) ?>" class="btn btn-info btn-xs"><i class="glyphicon glyphicon-cutlery"></i> NomNom</a>
                 <a href="<?= Url::to(['tiktak/index']) ?>" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-time"></i> TikTak</a>
             </div>
-            <a href="<?= Url::to(['account/index']) ?>" class="btn btn-<?= $active == 'a' ? 'danger' : 'default' ?> btn-xs"><i class="glyphicon glyphicon-usd"></i> Aktualne saldo: <strong><?= Yii::$app->formatter->asCurrency(Yii::$app->user->identity->balance, 'PLN') ?></strong></a>
+            <?php /*<a href="<?= Url::to(['account/index']) ?>" class="btn btn-<?= $active == 'a' ? 'danger' : 'default' ?> btn-xs"><i class="glyphicon glyphicon-usd"></i> Aktualne saldo: <strong><?= Yii::$app->formatter->asCurrency(Yii::$app->user->identity->balance, 'PLN') ?></strong></a>*/ ?>
             <a href="<?= Url::to(['site/restaurants']) ?>" class="btn btn-<?= $active == 'r' ? 'danger' : 'default' ?> btn-xs"><i class="glyphicon glyphicon-home"></i> Restauracje</a>
             <a href="<?= Url::to(['site/history']) ?>" class="btn btn-<?= $active == 'h' ? 'danger' : 'default' ?> btn-xs"><i class="glyphicon glyphicon-list-alt"></i> Historia zamówień</a>
             <a href="<?= Url::to(['site/logout']) ?>" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-log-out"></i> Wyloguj</a>

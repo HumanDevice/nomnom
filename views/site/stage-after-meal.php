@@ -2,12 +2,31 @@
 
 use app\models\FoodSearch;
 use app\models\Order;
+use app\models\User;
+use yii\bootstrap\Modal;
 use yii\helpers\Html;
 use yii\widgets\ListView;
+use yii\widgets\MaskedInput;
 
 $this->title = 'NomNom';
 
 /* @var $order Order */
+
+if (Yii::$app->user->id == User::BOOKKEEPER) {
+    $this->registerJs(<<<JS
+$("#edit").on("show.bs.modal", function(e) {
+    var button = $(e.relatedTarget);
+    var recipient = button.data('whatever') // Extract info from data-* attributes
+    $("#who").text(button.data("who"));
+    $("#credit").text(button.data("credit"));
+    $("#food_id").val(button.data("id"));
+    $("#code").val(button.data("code"));
+    $("#price").val(button.data("price"));
+})
+JS
+    );
+}
+
 ?>
 <?= $this->render('/menu/user') ?>
 <?= $this->render('/menu/admin') ?>
@@ -48,7 +67,7 @@ $this->title = 'NomNom';
             <h3>
                 <strong>2. <?= Html::encode($order->restaurant2->name) ?></strong>
                 <?php if (!empty($order->restaurant2->url)): ?>
-                <?= Html::a('LINK', $order->restaurant2->url, ['class' => 'btn btn-danger', 'target' => 'restaurant2']) ?>
+                <?= Html::a('LINK', $order->restaurant2->url, ['class' => 'btn btn-danger btn-xs', 'target' => 'restaurant2']) ?>
                 <?php endif; ?>
                 <?php if (!empty($order->restaurant2->screen)): ?>
                 <?= Html::a('ZDJĘCIE', '/uploads/menu/' . $order->restaurant2->screen, ['class' => 'btn btn-danger', 'target' => 'menu2']) ?>
@@ -95,4 +114,54 @@ $this->title = 'NomNom';
     'options' => ['tag' => 'table', 'class' => 'table table-striped'],
     'itemOptions' => ['tag' => false]
 ]) ?>
+<?php endif; ?>
+
+<?php if (Yii::$app->user->id == User::BOOKKEEPER): ?>
+<?php Modal::begin([
+    'header' => '<h4 class="modal-title">Edytuj zamówienie</h4>',
+    'options' => ['id' => 'edit'],
+
+]); ?>
+<div class="row">
+    <div class="col-sm-6">
+        <div class="form-group">
+            <strong>Zamawiający</strong>: <span id="who"></span>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="form-group">
+            <strong>Saldo</strong>: <span id="credit"></span>
+        </div>
+    </div>
+</div>
+<?= Html::beginForm(); ?>
+<?= Html::hiddenInput('food_id', null, ['id' => 'food_id']) ?>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="form-group">
+            <p><strong>Zamówienie:</strong></p>
+            <?= Html::textInput('code', null, ['id' => 'code', 'class' => 'form-control']) ?>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="form-group">
+            <p><strong>Kwota:</strong></p>
+            <?= MaskedInput::widget([
+                'id' => 'price',
+                'name' => 'price',
+                'value' => '00.00',
+                'mask' => '99.99'
+            ]) ?>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12 text-right">
+        <?= Html::submitButton('Zapisz zmiany', ['class' => 'btn btn-primary']) ?>
+    </div>
+</div>
+<?= Html::endForm(); ?>
+<?php Modal::end(); ?>
 <?php endif;
