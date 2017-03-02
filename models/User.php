@@ -5,6 +5,7 @@ namespace app\models;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
@@ -28,6 +29,8 @@ use yii\web\IdentityInterface;
  * @property Preference[] $preferences
  * @property Restaurant[] $restaurants
  * @property string $short
+ * @property Balance[] $balanceHistory
+ * @property Balance $latestBalanceHistory
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -171,6 +174,24 @@ class User extends ActiveRecord implements IdentityInterface
     public function getEmployeeName()
     {
         return $this->deleted ? $this->old_username : $this->username;
+    }
+
+    /**
+     * Balance history relation
+     * @return ActiveQuery
+     */
+    public function getBalanceHistory()
+    {
+        return $this->hasMany(Balance::class, ['user_id' => 'id']);
+    }
+
+    /**
+     * Balance history relation
+     * @return ActiveQuery
+     */
+    public function getLatestBalanceHistory()
+    {
+        return $this->hasOne(Balance::class, ['user_id' => 'id'])->orderBy(['balance.id' => SORT_DESC])->limit(1);
     }
 
     /**

@@ -238,4 +238,30 @@ class UsersController extends Controller
             'dataProvider' => $dataProvider,
         ]);
     }
+
+
+    public function actionCsv()
+    {
+        if (!in_array(Yii::$app->user->id, User::BOOKKEEPER)) {
+            die;
+        }
+        $csv = [];
+        $row = 1;
+        $users = User::find();
+        foreach ($users->each() as $user) {
+            $csv[] = [
+                $row++,
+                $user->username,
+                $user->balance,
+                $user->latestBalanceHistory ? $user->latestBalanceHistory->value : '',
+                $user->latestBalanceHistory ? Yii::$app->formatter->asDatetime($user->latestBalanceHistory->created_at) : '',
+            ];
+        }
+        $content = [];
+        foreach ($csv as $line) {
+            $content[] = implode(',', $line);
+        }
+
+        return Yii::$app->response->sendContentAsFile(implode("\n", $content), 'nomnom-saldo.csv', ['mimeType' => 'text/plain']);
+    }
 }

@@ -14,6 +14,9 @@ $this->title = 'NomNomAdmin Użytkownicy';
 <div class="row">
     <div class="col-lg-12">
         <div class="form-group">
+            <?php if (in_array(Yii::$app->user->id, User::BOOKKEEPER)): ?>
+            <a href="<?= Url::to(['users/csv']) ?>" class="btn btn-default btn-lg pull-right"><span class="glyphicon glyphicon-download"></span> Pobierz CSV sald</a>
+            <?php endif; ?>
             <a href="<?= Url::to(['users/create']) ?>" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-plus-sign"></span> Dodaj użytkownika</a>
         </div>
     </div>
