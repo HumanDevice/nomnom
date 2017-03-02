@@ -361,7 +361,7 @@ class SiteController extends Controller
         }
 
         $balance = Yii::$app->user->identity->balance;
-        $max = $balance - 2.5 ? $balance - 2.5 + 20: 20;
+        $max = $balance - 2.5 > 0 ? $balance - 2.5 + 20: 20;
         if ($max > 99.99) {
             $max = 99.99;
         }
