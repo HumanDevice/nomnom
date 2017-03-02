@@ -239,7 +239,9 @@ class UsersController extends Controller
         ]);
     }
 
-
+    /**
+     * Downloads csv
+     */
     public function actionCsv()
     {
         if (!in_array(Yii::$app->user->id, User::BOOKKEEPER)) {
@@ -247,7 +249,7 @@ class UsersController extends Controller
         }
         $csv = [];
         $row = 1;
-        $users = User::find();
+        $users = User::find()->where(['deleted' => 0]);
         foreach ($users->each() as $user) {
             $csv[] = [
                 $row++,
