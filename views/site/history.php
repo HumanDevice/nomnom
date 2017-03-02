@@ -47,7 +47,7 @@ $this->title = 'NomNom Historia';
         [
             'attribute' => 'with',
             'value' => function ($model) {
-                return $model->withOther->username;
+                return !empty($model->withOther) ? $model->withOther->username : null;
             }
         ],
         [

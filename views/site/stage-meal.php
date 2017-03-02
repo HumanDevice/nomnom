@@ -115,7 +115,7 @@ JS
                 <small>Max <?= $order->restaurant2->max ?> restauracj<?= $order->restaurant2->max == 1 ? 'a' : 'e' ?> z tego miejsca</small>
                 <?php endif; ?>
                 <?php if ($order->restaurant2->phone): ?>
-                <small>Telefon: <?= $order->restaurant->phone ?></small>
+                <small>Telefon: <?= $order->restaurant2->phone ?></small>
                 <?php endif; ?>
             </h3>
             <?php endif ?>
