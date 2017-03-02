@@ -384,6 +384,7 @@ class SiteController extends Controller
         $same->order_id = $chosenFood->order_id;
         $same->restaurant_id = $chosenFood->restaurant_id;
         $same->code = $chosenFood->code;
+        $same->price = $chosenFood->price;
         $same->screen = $chosenFood->screen;
 
         if (!empty($same->screen)) {
