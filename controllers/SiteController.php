@@ -182,9 +182,12 @@ class SiteController extends Controller
             }
         }
 
-        $ordered = OrderFood::findOne([
-            'order_id' => $order->id,
-            'author_id' => Yii::$app->user->id,
+        $ordered = OrderFood::findOne(['and',
+            ['order_id' => $order->id],
+            ['or',
+                ['author_id' => Yii::$app->user->id],
+                ['with' => Yii::$app->user->id]
+            ]
         ]);
 
         return $this->render('stage-meal', [

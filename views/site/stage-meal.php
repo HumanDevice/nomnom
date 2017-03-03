@@ -139,7 +139,7 @@ JS
                 <?php endif ?>
             </div>
             <div class="col-lg-3 text-right">
-                <?= $form->field($model, 'with')->dropDownList([0 => '-'] + FoodForm::withList(), ['id' => 'with']) ?>
+                <?= $form->field($model, 'with')->dropDownList([0 => '-'] + FoodForm::withList($order->id), ['id' => 'with']) ?>
             </div>
         </div>
         <div class="row">
@@ -174,7 +174,11 @@ JS
 <div class="row">
     <div class="col-lg-12">
         <div class="alert alert-success">
+            <?php if ($ordered->author_id == Yii::$app->user->id): ?>
             <a href="<?= Url::to(['site/unorder', 'order' => $order->id]) ?>" class="btn btn-danger pull-right" data-confirm="Czy na pewno chcesz usunąć zamówienie?">Usuń zamówienie</a>
+            <?php else: ?>
+            <span class="btn btn-default pull-right">Zamówienie grupowe</span>
+            <?php endif; ?>
             <strong>Moje zamówienie na kwotę <span class="label label-danger"><?= Yii::$app->formatter->asCurrency($ordered->price, 'PLN') ?></span></strong>:<br><br>
             <strong>Restauracja</strong>: <?= Html::encode($ordered->restaurant->name) ?>
             <?php if (!empty($ordered->code)): ?>

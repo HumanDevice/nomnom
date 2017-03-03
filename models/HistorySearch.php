@@ -45,9 +45,10 @@ class HistorySearch extends OrderFood
      */
     public function history($params)
     {
-        $query = OrderFood::find()
-                ->where(['author_id' => Yii::$app->user->id])
-                ->joinWith(['restaurant', 'withOther']);
+        $query = OrderFood::find()->where(['or',
+                    ['author_id' => Yii::$app->user->id],
+                    ['with' => Yii::$app->user->id],
+                ])->joinWith(['restaurant', 'withOther']);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

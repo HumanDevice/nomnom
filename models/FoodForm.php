@@ -79,9 +79,12 @@ class FoodForm extends Model
             return 'Brak zamówienia na odpowiednim etapie!';
         }
 
-        $alreadyOrdered = OrderFood::findOne([
-            'author_id' => Yii::$app->user->id,
-            'order_id' => $order->id,
+        $alreadyOrdered = OrderFood::findOne(['and',
+            ['order_id' => $order->id],
+            ['or',
+                ['author_id' => Yii::$app->user->id],
+                ['with' => Yii::$app->user->id]
+            ]
         ]);
         if (!empty($alreadyOrdered)) {
             return 'Usuń najpierw swoje poprzednie zamówienie, aby je zmienić!';
@@ -91,6 +94,10 @@ class FoodForm extends Model
             $checkWith = User::findOne(['id' => $this->with, 'deleted' => 0]);
             if (empty($checkWith)) {
                 return 'Coś jest nie tak z wybranym współbiesiadnikiem!';
+            }
+            $availableList = static::withList($order->id);
+            if (!in_array($this->with, array_keys($availableList))) {
+                return 'Wybrany współbiesiadnik już prawdopodobnie zamówił!';
             }
         }
 
@@ -121,14 +128,30 @@ class FoodForm extends Model
     }
 
     /**
-     * Returns list of users except current.
+     * Returns list of users except current one that did not order yet.
+     * @param int $order_id
      * @return array
      */
-    public static function withList()
+    public static function withList($order_id)
     {
-        return ArrayHelper::map(User::find()->where(['and',
+        $users = User::find()->where(['and',
             ['<>', 'id', Yii::$app->user->id],
             ['deleted' => 0]
-        ])->orderBy(['username' => SORT_ASC])->all(), 'id', 'username');
+        ])->orderBy(['username' => SORT_ASC])->all();
+        $orders = OrderFood::find()->where(['order_id' => $order_id])->all();
+        $alreadyOrdered = [];
+        foreach ($orders as $order) {
+            $alreadyOrdered[] = $order->author_id;
+            if (!empty($order->with)) {
+                $alreadyOrdered[] = $order->with;
+            }
+        }
+        $listWith = [];
+        foreach ($users as $user) {
+            if (!in_array($user->id, $alreadyOrdered)) {
+                $listWith[$user->id] = $user->username;
+            }
+        }
+        return $listWith;
     }
 }
