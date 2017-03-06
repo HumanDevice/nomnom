@@ -375,9 +375,12 @@ class SiteController extends Controller
             return $this->goBack();
         }
 
-        $alreadyOrdered = OrderFood::findOne([
-            'author_id' => Yii::$app->user->id,
-            'order_id' => $chosenFood->order_id,
+        $alreadyOrdered = OrderFood::findOne(['and',
+            ['order_id' => $chosenFood->order_id],
+            ['or',
+                ['author_id' => Yii::$app->user->id],
+                ['with' => Yii::$app->user->id]
+            ]
         ]);
         if (!empty($alreadyOrdered)) {
             $this->err('Usuń najpierw swoje poprzednie zamówienie, aby je zmienić!');
