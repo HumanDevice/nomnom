@@ -167,7 +167,7 @@ class SiteController extends Controller
             $model->restaurant = $order->restaurant_id;
         }
         if ($model->load(Yii::$app->request->post())) {
-            $model->screen = UploadedFile::getInstance($model, 'screen');
+            $model->screen = null;//UploadedFile::getInstance($model, 'screen');
             if ($model->validate()) {
 //                if (empty($model->code) && empty($model->screen)) {
 //                    $model->addError('code', 'Musisz wskazać, co chcesz zamówić.');
@@ -182,13 +182,13 @@ class SiteController extends Controller
             }
         }
 
-        $ordered = OrderFood::findOne(['and',
+        $ordered = OrderFood::find()->where(['and',
             ['order_id' => $order->id],
             ['or',
                 ['author_id' => Yii::$app->user->id],
                 ['with' => Yii::$app->user->id]
             ]
-        ]);
+        ])->limit(1)->one();
 
         return $this->render('stage-meal', [
             'model' => $model,
@@ -364,24 +364,30 @@ class SiteController extends Controller
             $this->err('Zamówienia grupowego nie można kopiować!');
             return $this->goBack();
         }
-
-        $balance = Yii::$app->user->identity->balance;
-        $max = $balance - 2.5 > 0 ? $balance - 2.5 + 20: 20;
-        if ($max > 99.99) {
-            $max = 99.99;
-        }
-        if ($chosenFood->price > $max) {
-            $this->err('Brak wymaganych środków na koncie!');
+        if ($chosenFood->author_id == 22) {
+            $this->err('Zamówienia szefa nie można kopiować!');
             return $this->goBack();
         }
 
-        $alreadyOrdered = OrderFood::findOne(['and',
+        if (Yii::$app->user->id != 22) {
+            $balance = Yii::$app->user->identity->balance;
+            $max = $balance - 2.5 > 0 ? $balance - 2.5 + 20: 20;
+            if ($max > 99.99) {
+                $max = 99.99;
+            }
+            if ($chosenFood->price > $max) {
+                $this->err('Brak wymaganych środków na koncie!');
+                return $this->goBack();
+            }
+        }
+
+        $alreadyOrdered = OrderFood::find()->where(['and',
             ['order_id' => $chosenFood->order_id],
             ['or',
                 ['author_id' => Yii::$app->user->id],
                 ['with' => Yii::$app->user->id]
             ]
-        ]);
+        ])->limit(1)->one();
         if (!empty($alreadyOrdered)) {
             $this->err('Usuń najpierw swoje poprzednie zamówienie, aby je zmienić!');
             return $this->goBack();

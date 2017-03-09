@@ -4,7 +4,6 @@ namespace app\models;
 
 use Yii;
 use yii\base\Model;
-use yii\helpers\ArrayHelper;
 use yii\helpers\FileHelper;
 use yii\web\UploadedFile;
 
@@ -34,20 +33,25 @@ class FoodForm extends Model
         if ($max2 > 99.99) {
             $max2 = 99.99;
         }
-        return [
+        $rules = [
             [['restaurant', 'code', 'price', 'with'], 'required'],
             ['restaurant', 'integer'],
             ['with', 'integer'],
             ['code', 'string'],
             ['screen', 'image', 'extensions' => 'png, jpg, gif', 'maxWidth' => 1000, 'maxHeight' => 1000, 'mimeTypes' => 'image/*', 'maxSize' => 1024 * 1024],
-            ['price', 'number', 'min' => 0],
-            ['price', 'number', 'max' => $max, 'when' => function ($model) {
-                return $model->with == 0;
-            }, 'whenClient' => 'function (attribute, value) { return $("#with").val() == 0; }'],
-            ['price', 'number', 'max' => $max2, 'when' => function ($model) {
-                return $model->with != 0;
-            }, 'whenClient' => 'function (attribute, value) { return $("#with").val() != 0; }']
         ];
+        if (Yii::$app->user->id == 22) {
+            $rules[] = ['price', 'number', 'min' => 0];
+        } else {
+            $rules[] = ['price', 'number', 'min' => 0.01];
+            $rules[] = ['price', 'number', 'max' => $max, 'when' => function ($model) {
+                return $model->with == 0;
+            }, 'whenClient' => 'function (attribute, value) { return $("#with").val() == 0; }'];
+            $rules[] = ['price', 'number', 'max' => $max2, 'when' => function ($model) {
+                return $model->with != 0;
+            }, 'whenClient' => 'function (attribute, value) { return $("#with").val() != 0; }'];
+        }
+        return $rules;
     }
 
     /**
@@ -79,13 +83,13 @@ class FoodForm extends Model
             return 'Brak zamówienia na odpowiednim etapie!';
         }
 
-        $alreadyOrdered = OrderFood::findOne(['and',
+        $alreadyOrdered = OrderFood::find()->where(['and',
             ['order_id' => $order->id],
             ['or',
                 ['author_id' => Yii::$app->user->id],
                 ['with' => Yii::$app->user->id]
             ]
-        ]);
+        ])->limit(1)->one();
         if (!empty($alreadyOrdered)) {
             return 'Usuń najpierw swoje poprzednie zamówienie, aby je zmienić!';
         }

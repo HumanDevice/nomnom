@@ -49,7 +49,6 @@ var deadline = new Date({$order->stage_end} * 1000);
 initializeClock('clockdiv', deadline);
 JS
 );
-
 /* @var $order Order */
 ?>
 <?= $this->render('/menu/user') ?>
@@ -144,14 +143,18 @@ JS
         </div>
         <div class="row">
             <div class="col-lg-9">
-                <?= $form->field($model, 'code')->textInput(['autofocus' => true])->hint('W przypadku Manufaktury podajemy zamówienie w kolejności: ZUPA, DRUGIE DANIE, SAŁATKI') ?>
+                <?= $form->field($model, 'code')->textInput(['autofocus' => true])->hint('W przypadku Manufaktury podajemy zamówienie w kolejności: zupa, drugie danie, sałatki') ?>
                 <?php /*= $form->field($model, 'screen')->fileInput()*/ ?>
             </div>
             <div class="col-lg-3 text-right">
+                <?php if (Yii::$app->user->id != 22): ?>
                 <?= $form->field($model, 'price')->widget(MaskedInput::class, ['mask' => '99.99'])->hint('Proszę pamiętać o doliczeniu ewentualnego kosztu opakowania.') ?>
+                <?php else: ?>
+                <?= Html::activeHiddenInput($model, 'price') ?>
+                <?php endif; ?>
             </div>
         </div>
-                    <?php
+        <?php if (Yii::$app->user->id != 22):
         $balance = Yii::$app->user->identity->balance;
         $max = $balance - 2.5 > 0 ? $balance + 20 - 2.5 : 20;
         if ($max > 99.99) {
@@ -160,6 +163,9 @@ JS
         ?>
         <p>Aktualne saldo: <strong><?= Yii::$app->formatter->asCurrency($balance, 'PLN') ?></strong><br>
         Powyższa kwota pozwala jednorazowo na zamówienie o łącznej wartości <?= Yii::$app->formatter->asCurrency($max, 'PLN') ?></p>
+        <?php else: ?>
+        <p>Aktualne saldo: <strong>&infin;</strong></p>
+        <?php endif; ?>
     </div>
 </div>
 <div class="row">
@@ -193,7 +199,7 @@ JS
         </div>
     </div>
 </div>
-<?php endif ?>
+<?php endif; ?>
 <?= ListView::widget([
     'dataProvider' => $dataProvider,
     'itemView' => 'ordered',
