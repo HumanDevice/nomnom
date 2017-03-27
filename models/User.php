@@ -24,6 +24,8 @@ use yii\web\IdentityInterface;
  * @property int $deleted
  * @property int $division
  * @property string $balance
+ * @property string $gitlab
+ * @property string $email
  *
  * @property string $employeeName
  * @property Preference[] $preferences
@@ -69,6 +71,8 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             [['username', 'role', 'division'], 'required'],
+            ['email', 'email'],
+            [['username', 'gitlab', 'email'], 'string', 'max' => 255],
             ['role', 'in', 'range' => [self::ROLE_ADMIN, self::ROLE_USER]],
             ['division', 'in', 'range' => array_keys(static::divisionLabels())],
         ];
@@ -81,8 +85,10 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             'username' => 'Imię',
+            'email' => 'Email',
             'role' => 'Rola',
             'division' => 'Grupa',
+            'gitlab' => 'GitLab',
         ];
     }
 
@@ -159,12 +165,27 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
+     * Finds user by email.
+     * @param string $email
+     * @param bool $statusCheck
+     * @return User
+     */
+    public static function findByEmail($email, $statusCheck = true)
+    {
+        $conditions = ['email' => $email];
+        if ($statusCheck) {
+            $conditions['deleted'] = 0;
+        }
+        return static::findOne($conditions);
+    }
+
+    /**
      * Checks if user is admin.
      * @return bool
      */
     public function getIsAdmin()
     {
-        return $this->role == self::ROLE_ADMIN;
+        return $this->role === self::ROLE_ADMIN;
     }
 
     /**
@@ -229,7 +250,7 @@ class User extends ActiveRecord implements IdentityInterface
         $split = explode(' ', $this->username);
         $short = '';
         foreach ($split as $part) {
-            if (strlen($part)) {
+            if (!empty($part)) {
                 $short .= mb_substr($part, 0, 1, 'UTF-8');
             }
         }

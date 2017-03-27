@@ -10,6 +10,7 @@ use app\models\LoginForm;
 use app\models\Order;
 use app\models\OrderChoice;
 use app\models\OrderFood;
+use app\models\ResetForm;
 use app\models\Restaurant;
 use app\models\RestaurantSearch;
 use app\models\StartForm;
@@ -36,7 +37,7 @@ class SiteController extends Controller
                 'class' => AccessControl::class,
                 'rules' => [
                     [
-                        'actions' => ['login', 'start'],
+                        'actions' => ['login', 'start', 'reset', 'newpass'],
                         'allow' => true,
                         'roles' => ['?'],
                     ],
@@ -63,7 +64,6 @@ class SiteController extends Controller
 
     /**
      * Displays homepage.
-     *
      * @return string
      */
     public function actionIndex()
@@ -83,6 +83,42 @@ class SiteController extends Controller
     }
 
     /**
+     * Password reset part 1.
+     * @return string
+     */
+    public function actionReset()
+    {
+        $model = new ResetForm;
+        if ($model->load(Yii::$app->request->post()) && $model->reset()) {
+            $this->ok('Email został wysłany.');
+            return $this->goBack();
+        }
+        return $this->render('reset', ['model' => $model]);
+    }
+
+    /**
+     * Password reset part 2.
+     * @param string $token
+     * @return string
+     */
+    public function actionNewpass($token)
+    {
+        $model = User::findOne(['auth_key' => $token]);
+        if (!$model) {
+            $this->err('Nieprawidłowy token!');
+            return $this->goBack();
+        }
+        $model->generateAuthKey();
+        $model->password_hash = null;
+        if (!$model->save()) {
+            $this->err('Nie udało się zresetować hasła.');
+            return $this->goBack();
+        }
+        $this->ok('Hasło zresetowane. Ustaw nowe.');
+        return $this->redirect(['site/start']);
+    }
+
+    /**
      * Login action.
      * @return string
      */
@@ -92,13 +128,11 @@ class SiteController extends Controller
             return $this->goHome();
         }
 
-        $model = new LoginForm();
+        $model = new LoginForm;
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
             return $this->goBack();
         }
-        return $this->render('login', [
-            'model' => $model,
-        ]);
+        return $this->render('login', ['model' => $model]);
     }
 
     /**

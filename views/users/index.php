@@ -54,10 +54,12 @@ $this->title = 'NomNomAdmin Użytkownicy';
                 return empty($model->password_hash) ? 'Tak' : 'Nie';
             }
         ],
+        'gitlab',
+        'email',
         [
             'class' => ActionColumn::class,
-            'contentOptions' => ['class' => 'text-right'],
-            'template' => '{view}&nbsp;&nbsp;{update}&nbsp;&nbsp;{balance}&nbsp;&nbsp;{password}&nbsp;&nbsp;{delete}',
+            'contentOptions' => ['class' => 'text-right', 'style' => 'white-space:nowrap'],
+            'template' => '{view}&nbsp;{update}&nbsp;{balance}&nbsp;{password}&nbsp;{delete}',
             'buttons' => [
                 'balance' => function ($url, $model, $key) {
                     return Html::a(Html::tag('span', '', ['class' => 'glyphicon glyphicon-usd']), $url, ['data-pjax' => 0]);

@@ -6,8 +6,8 @@ use yii\widgets\Pjax;
 
 $this->title = 'NomNom Restauracje';
 ?>
-<?= $this->render('/menu/user', ['active' => 'r']) ?>
-<?= $this->render('/menu/admin') ?>
+<?= $this->render('/menu/user', ['active' => 'r', 'service' => 'nomnom']) ?>
+<?= $this->render('/menu/admin', ['service' => 'nomnom']) ?>
 
 <div class="row">
     <div class="col-lg-12">

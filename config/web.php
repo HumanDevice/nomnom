@@ -1,8 +1,6 @@
 <?php
 
-$params = require(__DIR__ . '/params.php');
-
-$config = [
+return [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
@@ -10,7 +8,6 @@ $config = [
     'timeZone'   => 'Europe/Warsaw',
     'components' => [
         'request' => [
-            // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'qPusFpsXU-6-4dYc_jiKS-Zg8PY3DYWt',
         ],
         'cache' => [
@@ -24,21 +21,19 @@ $config = [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        'mailer' => [
-            'class' => 'yii\swiftmailer\Mailer',
-            'useFileTransport' => true,
-        ],
+        'mailer' => require __DIR__ . '/mailer.php',
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
                 [
                     'class' => 'yii\log\FileTarget',
                     'levels' => ['error', 'warning'],
-                    'logVars' => ['_GET', '_POST']
+                    'logVars' => ['_GET'],
+                    'except' => ['yii\web\HttpException:404']
                 ],
             ],
         ],
-        'db' => require(__DIR__ . '/db.php'),
+        'db' => require __DIR__ . '/db.php',
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
@@ -50,33 +45,8 @@ $config = [
                 '<controller>/<action>/<id:\d+>' => '<controller>/<action>',
             ],
         ],
-        'hipchat' => [
-            'class' => 'app\components\HipChat',
-            'mode' => 'test',
-            'prod' => [
-                'room' => 765869,
-                'token' => 'ruC1LAqGbMZy4rOw2d5gT0PvFsJ7xzdISSqGwzvY'
-            ],
-            'test' => [
-                'room' => 3147500,
-                'token' => 'vwqKCZFW690NcYpIByebDAMOawy0rHGUX2OGIT5i'
-            ],
-        ],
+        'hipchat' => require __DIR__ . '/hipchat.php',
+        'gitlab' => require __DIR__ . '/gitlab.php',
     ],
-    'params' => $params,
+    'params' => require __DIR__ . '/params.php',
 ];
-
-//if (YII_ENV_DEV) {
-//    // configuration adjustments for 'dev' environment
-//    $config['bootstrap'][] = 'debug';
-//    $config['modules']['debug'] = [
-//        'class' => 'yii\debug\Module',
-//    ];
-//
-//    $config['bootstrap'][] = 'gii';
-//    $config['modules']['gii'] = [
-//        'class' => 'yii\gii\Module',
-//    ];
-//}
-
-return $config;

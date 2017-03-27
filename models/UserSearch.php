@@ -20,7 +20,7 @@ class UserSearch extends User
     {
         return [
             [['id', 'role', 'virgin', 'division'], 'integer'],
-            [['username'], 'string'],
+            [['username', 'gitlab', 'email'], 'string'],
         ];
     }
 
@@ -55,7 +55,9 @@ class UserSearch extends User
             ->andFilterWhere(['id' => $this->id])
             ->andFilterWhere(['role' => $this->role])
             ->andFilterWhere(['division' => $this->division])
-            ->andFilterWhere(['like', 'username', $this->username]);
+            ->andFilterWhere(['like', 'username', $this->username])
+            ->andFilterWhere(['like', 'gitlab', $this->gitlab])
+            ->andFilterWhere(['like', 'email', $this->email]);
 
         if ($this->virgin === '0') {
             $query->andWhere(['password_hash' => null]);

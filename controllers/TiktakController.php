@@ -37,16 +37,21 @@ class TiktakController extends Controller
      */
     public function getWeek()
     {
-        $week = Yii::$app->cache->get('week');
-        if ($week === false) {
-            $week = '?';
-            $provider = file_get_contents('http://jakitydzien.pl/');
-            if (($start = strpos($provider, '<h1>')) !== false) {
-                if (($end = strpos($provider, '</h1>')) !== false) {
-                    $week = trim(substr($provider, $start + 4, $end - $start - 4));
+        $week = '?';
+        try {
+            $week = Yii::$app->cache->get('week');
+            if ($week === false) {
+                $week = '?';
+                $provider = file_get_contents('http://jakitydzien.pl/');
+                if (($start = strpos($provider, '<h1>')) !== false) {
+                    if (($end = strpos($provider, '</h1>')) !== false) {
+                        $week = trim(substr($provider, $start + 4, $end - $start - 4));
+                    }
                 }
+                Yii::$app->cache->set('week', $week, 3600);
             }
-            Yii::$app->cache->set('week', $week, 3600);
+        } catch (\Throwable $exc) {
+            Yii::error($exc->getMessage());
         }
         return $week;
     }

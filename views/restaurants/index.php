@@ -8,8 +8,8 @@ use yii\widgets\Pjax;
 
 $this->title = 'NomNomAdmin Restauracje';
 ?>
-<?= $this->render('/menu/user') ?>
-<?= $this->render('/menu/admin', ['active' => 'r']) ?>
+<?= $this->render('/menu/user', ['service' => 'nomnom']) ?>
+<?= $this->render('/menu/admin', ['active' => 'r', 'service' => 'nomnom']) ?>
 <div class="row">
     <div class="col-lg-12">
         <div class="form-group">

@@ -35,5 +35,7 @@ $this->title = 'NomNomAdmin Użytkownicy';
             'attribute' => 'division',
             'value' => User::divisionLabels()[$model->division]
         ],
+        'gitlab',
+        'email',
     ]
 ]);

@@ -2,8 +2,8 @@
 
 $this->title = 'NomNom';
 ?>
-<?= $this->render('/menu/user') ?>
-<?= $this->render('/menu/admin') ?>
+<?= $this->render('/menu/user', ['service' => 'nomnom']) ?>
+<?= $this->render('/menu/admin', ['service' => 'nomnom']) ?>
 
 <div class="row">
     <div class="col-lg-12">
