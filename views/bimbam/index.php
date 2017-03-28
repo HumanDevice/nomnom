@@ -18,6 +18,7 @@ $this->title = 'BimBam';
         <div class="form-group">
             <h3 class="pull-right"><div class="label label-primary">GitLab: <?= Html::encode(Yii::$app->user->identity->gitlab) ?></div></h3>
             <a href="<?= Url::to(['bimbam/add']) ?>" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-plus"></span> Dodaj czas</a>
+            <a href="https://docs.google.com/a/human-device.com/document/d/1vPt4CdMN3raZuhyDEJw0fRPNaGdE9ix9BjcOzR4XJP8/edit?usp=sharing" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-info-sign"></span> Instrukcje</a>
         </div>
     </div>
 </div>
