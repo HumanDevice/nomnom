@@ -79,7 +79,6 @@ class BimbamController extends Controller
                         throw new Exception('Problem z aktualizacją czasu w issue: ' . print_r($newTime, 1) . ' - ' . print_r($data, 1));
                     }
                     $registeredTime = $newTime - $previousTime;
-                    Yii::error([$newTime, $previousTime, $registeredTime]);
                     if ($registeredTime !== 0 && !Time::addTime($projectId, $issueInnerId, $username, $registeredTime)) {
                         throw new Exception('Problem z dodaniem czasu usera: ' . print_r($registeredTime, 1) . ' - ' . print_r($data, 1));
                     }

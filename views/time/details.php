@@ -84,8 +84,7 @@ $this->title = 'BimBam Raport czasowy';
             'filterInputOptions' => ['class' => 'form-control', 'id' => null, 'placeholder' => 'ID'],
             'value' => function ($model) {
                 return Html::a(substr($model->project->url, 32), $model->project->url, ['class' => 'btn btn-xs btn-primary pull-right', 'target' => 'projekt'])
-                    . Html::tag('span', $model->project_id, ['class' => 'badge'])
-                    . ' "' . Html::encode($model->project->name) . '"';
+                    . Html::tag('span', $model->project_id, ['class' => 'badge']);
             }
         ],
         [

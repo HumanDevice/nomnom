@@ -157,9 +157,9 @@ class TimeSearch extends Time
      */
     public function search($params)
     {
-        $query = Time::find()->select(['time.*', 'GROUP_CONCAT(group.name SEPARATOR \', \') as group_names'])
+        $query = Time::find()->select(['time.*', 'GROUP_CONCAT(DISTINCT group.name SEPARATOR \', \') as group_names'])
             ->joinWith(['project', 'project.groups', 'issue'])
-            ->groupBy(['group_project.group_id', 'group_project.project_id', 'time.id']);
+            ->groupBy(['group_project.project_id', 'time.id']);
         $sumQuery = Time::find();
 
         $dataProvider = new ActiveDataProvider([
