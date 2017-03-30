@@ -1,11 +1,11 @@
 <?php
 
+use app\components\ListView;
 use app\models\FoodSearch;
 use app\models\Order;
 use app\models\User;
 use yii\bootstrap\Modal;
 use yii\helpers\Html;
-use yii\widgets\ListView;
 use yii\widgets\MaskedInput;
 
 $this->title = 'NomNom';
@@ -16,13 +16,12 @@ if (in_array(Yii::$app->user->id, User::BOOKKEEPER)) {
     $this->registerJs(<<<JS
 $("#edit").on("show.bs.modal", function(e) {
     var button = $(e.relatedTarget);
-    var recipient = button.data('whatever') // Extract info from data-* attributes
     $("#who").text(button.data("who"));
     $("#credit").text(button.data("credit"));
     $("#food_id").val(button.data("id"));
     $("#code").val(button.data("code"));
     $("#price").val(button.data("price"));
-})
+});
 JS
     );
 }
