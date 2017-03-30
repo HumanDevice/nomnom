@@ -8,6 +8,7 @@ use app\models\TimeSearch;
 use app\models\User;
 use Yii;
 use yii\filters\AccessControl;
+use yii\helpers\Html;
 use yii\web\Controller;
 
 class TimeController extends Controller
@@ -62,7 +63,7 @@ class TimeController extends Controller
         $projectModels = Project::find()->orderBy(['name' => SORT_ASC])->all();
         /* @var $projectModel Project */
         foreach ($projectModels as $projectModel) {
-            $projects[$projectModel->project_id] = $projectModel->name . ' [' . substr($projectModel->url, 32) . ']';
+            $projects[$projectModel->project_id] =  Html::a(Html::encode('[' . substr($projectModel->url, 32, strrpos($projectModel->url, '/') - 32) . '] ' . $projectModel->name), $projectModel->url, ['target' => 'projekt']);
         }
         $groups = [];
         $groupModels = Group::find()->orderBy(['name' => SORT_ASC])->all();

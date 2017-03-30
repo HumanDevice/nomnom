@@ -124,7 +124,7 @@ BootstrapPluginAsset::register($this);
                             <?php $lp = 1; foreach ($summaryTabs['projects'] as $project => $seconds): ?>
                                 <tr>
                                     <td class="text-center"><?= $lp ?></td>
-                                    <td class="text-center"><?= isset($projects[$project]) ? Html::encode($projects[$project]) : $project ?></td>
+                                    <td class="text-center"><?= isset($projects[$project]) ? $projects[$project] : $project ?></td>
                                     <td class="text-center"><?= Yii::$app->formatter->asDuration($seconds) ?></td>
                                     <td class="text-center"><?= $summaryTabs['seconds'] != 0 ? round($seconds * 100 / $summaryTabs['seconds'], 2) : '-' ?></td>
                                 </tr>

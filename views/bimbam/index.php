@@ -75,9 +75,13 @@ $this->title = 'BimBam';
             'format' => 'raw',
             'filterInputOptions' => ['class' => 'form-control', 'id' => null, 'placeholder' => 'ID'],
             'value' => function ($model) {
-                return Html::a(substr($model->project->url, 32), $model->project->url, ['class' => 'btn btn-xs btn-primary pull-right', 'target' => 'projekt'])
-                    . Html::tag('span', $model->project_id, ['class' => 'badge'])
-                    . ' "' . Html::encode($model->project->name) . '"';
+                return Html::tag('span', $model->project_id, ['class' => 'badge'])
+                    . Html::tag(
+                        'div',
+                        Html::a(substr($model->project->url, 32, strrpos($model->project->url, '/') - 32), $model->project->url, ['class' => 'btn btn-xs btn-primary', 'target' => 'projekt'])
+                        . Html::a($model->project->name, $model->project->url, ['class' => 'btn btn-xs btn-default', 'target' => 'projekt']),
+                        ['class' => 'btn-group pull-right']
+                    );
             }
         ],
         [
