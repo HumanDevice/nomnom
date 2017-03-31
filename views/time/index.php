@@ -72,7 +72,7 @@ BootstrapPluginAsset::register($this);
             'pluginOptions' => ['allowClear' => true],
         ]) ?>
         <?= $form->field($searchModel, 'project_id')->widget(Select2::class, [
-            'data' => $projects,
+            'data' => $projectsList,
             'options' => ['placeholder' => 'Wszystkie projekty'],
             'pluginOptions' => ['allowClear' => true],
         ]) ?>

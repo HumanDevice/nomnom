@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 
@@ -83,10 +84,12 @@ class Time extends ActiveRecord
     {
         $projectModel = Project::findOne(['project_id' => $project]);
         if (!$projectModel) {
+            Yii::error('Brak projektu o project_id = ' . $project);
             return false;
         }
         $userModel = User::findOne(['gitlab' => $user]);
         if (!$userModel) {
+            Yii::error('Brak usera o gitlab = ' . $user);
             return false;
         }
         $timeModel = new static;
@@ -94,7 +97,11 @@ class Time extends ActiveRecord
         $timeModel->issue_id = $issue;
         $timeModel->user_id = $userModel->id;
         $timeModel->seconds = $time;
-        return $timeModel->save();
+        if ($timeModel->save()) {
+            return true;
+        }
+        Yii::error($timeModel->errors);
+        return false;
     }
 
     /**

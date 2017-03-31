@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use Yii;
 use yii\db\ActiveRecord;
 
 /**
@@ -55,13 +56,13 @@ class Issue extends ActiveRecord
      * @param int $issue
      * @param int $innerIssue
      * @param int $time
-     * @return bool
+     * @return int
      */
     public static function updateTime($project, $issue, $innerIssue, $time)
     {
         $projectModel = Project::findOne(['project_id' => $project]);
         if (!$projectModel) {
-            return false;
+            return -1;
         }
         $issueModel = static::findOne([
             'project_id' => $projectModel->project_id,
@@ -75,6 +76,10 @@ class Issue extends ActiveRecord
             $issueModel->inner_id = $innerIssue;
         }
         $issueModel->time = $time;
-        return $issueModel->save();
+        if ($issueModel->save()) {
+            return 1;
+        }
+        Yii::error($issueModel->errors);
+        return 0;
     }
 }

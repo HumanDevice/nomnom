@@ -24,7 +24,7 @@
     "yiisoft/yii2-bootstrap": "*",
     "yiisoft/yii2-swiftmailer": "*",
     "yiisoft/yii2-httpclient": "~2.0.0",
-    "kartik-v/yii2-widget-datetimepicker": "*",
+    "kartik-v/yii2-widget-datetimepicker": "dev-master",
     "kartik-v/yii2-widget-datepicker": "*",
     "kartik-v/yii2-widget-select2": "*"
   },

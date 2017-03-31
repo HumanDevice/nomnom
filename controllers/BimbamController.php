@@ -60,8 +60,17 @@ class BimbamController extends Controller
             $postdata = file_get_contents("php://input");
             if (!empty($postdata)) {
                 $data = Json::decode($postdata);
-                if (isset($data['project']['name'], $data['project']['web_url'], $data['project_id'])) {
-                    if (!Project::addNew($data['project']['name'], $data['project']['web_url'], $data['project_id'])) {
+                if (isset($data['project']['name'], $data['project']['web_url'])) {
+                    $projectId = null;
+                    if (isset($data['project_id'])) {
+                        $projectId = $data['project_id'];
+                    } elseif (isset($data['object_attributes']['project_id'])) {
+                        $projectId = $data['object_attributes']['project_id'];
+                    }
+                    if ($projectId === null) {
+                        throw new Exception('Problem z dodaniem projektu: brak ID');
+                    }
+                    if (Project::addNew($data['project']['name'], $data['project']['web_url'], $projectId) === 0) {
                         throw new Exception('Problem z dodaniem projektu: ' . print_r($data, 1));
                     }
                 }
@@ -76,7 +85,7 @@ class BimbamController extends Controller
                         throw new Exception('Problem z API GitLab');
                     }
                     $newTime = $gitlabTime['total_time_spent'];
-                    if (!Issue::updateTime($projectId, $issueId, $issueInnerId, $newTime)) {
+                    if (Issue::updateTime($projectId, $issueId, $issueInnerId, $newTime) === 0) {
                         throw new Exception('Problem z aktualizacją czasu w issue: ' . print_r($newTime, 1) . ' - ' . print_r($data, 1));
                     }
                     $registeredTime = $newTime - $previousTime;
@@ -134,7 +143,7 @@ class BimbamController extends Controller
         $data = [];
         /* @var $project Project */
         foreach ($projects as $project) {
-            $data[$project->project_id] = '[' . substr($project->url, 32,strrpos($projectModel->url, '/') - 32) . '] ' . $project->name;
+            $data[$project->project_id] = '[' . substr($project->url, 32,strrpos($project->url, '/') - 32) . '] ' . $project->name;
         }
 
         return $this->render('add', [

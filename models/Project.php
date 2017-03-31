@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 
@@ -64,19 +65,23 @@ class Project extends ActiveRecord
      * @param string $name
      * @param string $url
      * @param int $id
-     * @return bool
+     * @return int
      */
     public static function addNew($name, $url, $id)
     {
         $old = static::findOne(['project_id' => $id]);
         if ($old) {
-            return false;
+            return -1;
         }
         $project = new static;
         $project->name = $name;
         $project->url = $url;
         $project->project_id = $id;
-        return $project->save();
+        if ($project->save()) {
+            return 1;
+        }
+        Yii::error($project->errors);
+        return 0;
     }
 
     /**

@@ -60,10 +60,12 @@ class TimeController extends Controller
             $users[$userModel->id] = $userModel->username . ' [' . (isset(User::divisionLabels()[$userModel->division]) ? User::divisionLabels()[$userModel->division] : '') . ']';
         }
         $projects = [];
+        $projectsList = [];
         $projectModels = Project::find()->orderBy(['name' => SORT_ASC])->all();
         /* @var $projectModel Project */
         foreach ($projectModels as $projectModel) {
             $projects[$projectModel->project_id] =  Html::a(Html::encode('[' . substr($projectModel->url, 32, strrpos($projectModel->url, '/') - 32) . '] ' . $projectModel->name), $projectModel->url, ['target' => 'projekt']);
+            $projectsList[$projectModel->project_id] =  '[' . substr($projectModel->url, 32, strrpos($projectModel->url, '/') - 32) . '] ' . $projectModel->name;
         }
         $groups = [];
         $groupModels = Group::find()->orderBy(['name' => SORT_ASC])->all();
@@ -76,6 +78,7 @@ class TimeController extends Controller
             'searchModel'  => $searchModel,
             'users' => $users,
             'projects' => $projects,
+            'projectsList' => $projectsList,
             'groups' => $groups,
             'summary' => $summary,
             'summaryTabs' => $summaryTabs,
