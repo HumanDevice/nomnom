@@ -71,6 +71,14 @@ $this->title = 'BimBam';
     'filterSelector' => '.date_range',
     'columns'      => [
         [
+            'attribute' => 'group_id',
+            'contentOptions' => ['class' => 'small'],
+            'filter' => $groups,
+            'value' => function ($model) {
+                return $model->group_names;
+            }
+        ],
+        [
             'attribute' => 'project_id',
             'format' => 'raw',
             'filterInputOptions' => ['class' => 'form-control', 'id' => null, 'placeholder' => 'ID'],

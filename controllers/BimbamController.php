@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Group;
 use app\models\Issue;
 use app\models\Project;
 use app\models\Time;
@@ -102,9 +103,17 @@ class BimbamController extends Controller
         $searchModel->user_id = Yii::$app->user->id;
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+        $groups = [];
+        $groupModels = Group::find()->orderBy(['name' => SORT_ASC])->all();
+        /* @var $groupModel Group */
+        foreach ($groupModels as $groupModel) {
+            $groups[$groupModel->id] = $groupModel->name;
+        }
+
         return $this->render('index', [
             'searchModel'  => $searchModel,
             'dataProvider' => $dataProvider,
+            'groups' => $groups,
         ]);
     }
 
@@ -125,7 +134,7 @@ class BimbamController extends Controller
         $data = [];
         /* @var $project Project */
         foreach ($projects as $project) {
-            $data[$project->project_id] = $project->name . ' [' . substr($project->url, 32) . ']';
+            $data[$project->project_id] = '[' . substr($project->url, 32,strrpos($projectModel->url, '/') - 32) . '] ' . $project->name;
         }
 
         return $this->render('add', [
