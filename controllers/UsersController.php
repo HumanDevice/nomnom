@@ -240,6 +240,19 @@ class UsersController extends Controller
     }
 
     /**
+     * Formats CSV.
+     * @param string $data
+     * @return string
+     */
+    public function formatCsv($data)
+    {
+        if (strpos($data, ',') !== false) {
+            $data = '"' . str_replace('"', '""', $data) . '"';
+        }
+        return $data;
+    }
+
+    /**
      * Downloads csv
      */
     public function actionCsv()
@@ -253,7 +266,7 @@ class UsersController extends Controller
         foreach ($users->each() as $user) {
             $csv[] = [
                 $row++,
-                $user->username,
+                $this->formatCsv($user->username),
                 $user->balance,
                 $user->latestBalanceHistory ? $user->latestBalanceHistory->value : '',
                 $user->latestBalanceHistory ? Yii::$app->formatter->asDatetime($user->latestBalanceHistory->created_at) : '',

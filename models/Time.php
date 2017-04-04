@@ -21,6 +21,7 @@ use yii\db\ActiveRecord;
  *
  * @property Project $project
  * @property Issue $issue
+ * @property User $user
  */
 class Time extends ActiveRecord
 {
@@ -131,5 +132,14 @@ class Time extends ActiveRecord
     public function getIssue()
     {
         return $this->hasOne(Issue::class, ['inner_id' => 'issue_id']);
+    }
+
+    /**
+     * Returns user relation
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUser()
+    {
+        return $this->hasOne(User::class, ['id' => 'user_id']);
     }
 }

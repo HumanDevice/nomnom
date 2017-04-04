@@ -15,14 +15,19 @@ BootstrapPluginAsset::register($this);
 <?= $this->render('/menu/admin', ['active' => 't', 'service' => 'bimbam']) ?>
 
 <div class="row">
-    <div class="col-sm-6">
+    <div class="col-sm-4">
         <div class="form-group">
             <a href="<?= Url::to(['time/index']) ?>" class="btn btn-warning btn-block">Raport zbiorczy</a>
         </div>
     </div>
-    <div class="col-sm-6">
+    <div class="col-sm-4">
         <div class="form-group">
             <a href="<?= Url::to(['time/details']) ?>" class="btn btn-default btn-block">Raport szczegółowy</a>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="form-group">
+            <a href="<?= Url::to(['time/csv']) ?>" class="btn btn-success btn-block">Pobierz CSV z poprzedniego miesiąca</a>
         </div>
     </div>
 </div>

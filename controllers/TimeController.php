@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\models\Group;
 use app\models\Project;
+use app\models\Time;
 use app\models\TimeSearch;
 use app\models\User;
 use Yii;
@@ -114,5 +115,77 @@ class TimeController extends Controller
             'users' => $users,
             'groups' => $groups,
         ]);
+    }
+
+    /**
+     * Formats CSV.
+     * @param string $data
+     * @return string
+     */
+    public function formatCsv($data)
+    {
+        if (strpos($data, ',') !== false) {
+            $data = '"' . str_replace('"', '""', $data) . '"';
+        }
+        return $data;
+    }
+
+    /**
+     * Formats time.
+     * @param int $seconds
+     * @return string
+     */
+    public function formatTime($seconds)
+    {
+        $hours = floor($seconds / 60 / 60);
+        $left = $seconds - $hours * 60 * 60;
+        $minutes = floor($left / 60);
+        $left -= $minutes * 60;
+        return str_pad($hours, 2, '0', STR_PAD_LEFT) . ':'
+            . str_pad($minutes, 2, '0', STR_PAD_LEFT) . ':'
+            . str_pad($left, 2, '0', STR_PAD_LEFT);
+    }
+
+    /**
+     * Downloads csv
+     */
+    public function actionCsv()
+    {
+        $csv = [];
+        $name = date('Y-m', mktime(1, 1, 1, date('n') - 1, 1));
+        $from = date('Y-m-01 00:00:00', mktime(1, 1, 1, date('n') - 1, 1));
+        $to = date('Y-m-t 23:59:59', mktime(1, 1, 1, date('n') - 1, 1));
+        $time = Time::find()->where(['and',
+            ['>=', 'time.created_at', Yii::$app->formatter->asTimestamp(date_create($from, timezone_open('Europe/Warsaw')))],
+            ['<=', 'time.created_at', Yii::$app->formatter->asTimestamp(date_create($to, timezone_open('Europe/Warsaw')))],
+        ])->joinWith(['project', 'user']);
+        $csv[] = [
+            'Projekt',
+            'URL',
+            'Autor',
+            'Issue',
+            'Czas [s]',
+            'Czas [h:m:s]',
+            'Opis',
+            'Data',
+        ];
+        foreach ($time->each() as $entry) {
+            $csv[] = [
+                $this->formatCsv($entry->project->name),
+                $this->formatCsv($entry->project->url),
+                $this->formatCsv($entry->user->username),
+                $entry->issue_id,
+                $entry->seconds,
+                $this->formatTime($entry->seconds),
+                $this->formatCsv($entry->description),
+                Yii::$app->formatter->asDate($entry->created_at, 'y-M-d')
+            ];
+        }
+        $content = [];
+        foreach ($csv as $line) {
+            $content[] = implode(',', $line);
+        }
+
+        return Yii::$app->response->sendContentAsFile(implode("\n", $content), 'bimbam-' . $name . '.csv', ['mimeType' => 'text/plain']);
     }
 }
