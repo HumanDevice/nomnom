@@ -194,7 +194,7 @@ JS
             <?= Html::img('/uploads/' . $ordered->author_id . '/' . $ordered->screen, ['class' => 'img-thumbnail img-responsive']) ?>
             <?php endif ?>
             <?php if (!empty($ordered->with)): ?>
-            <p>Wspólnie z <?= Html::encode($ordered->withOther->username) ?></p>
+            <p>Wspólnie z <?= Html::encode($ordered->author_id == Yii::$app->user->id ? $ordered->withOther->username : $ordered->author->username) ?></p>
             <?php endif ?>
         </div>
     </div>
