@@ -47,7 +47,7 @@ class Issue extends ActiveRecord
         if (!$issueModel) {
             return 0;
         }
-        return $issueModel->time;
+        return (int)$issueModel->time;
     }
 
     /**

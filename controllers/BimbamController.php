@@ -84,13 +84,15 @@ class BimbamController extends Controller
                     if ($gitlabTime === false || !isset($gitlabTime['total_time_spent'])) {
                         throw new Exception('Problem z API GitLab');
                     }
-                    $newTime = $gitlabTime['total_time_spent'];
-                    if (Issue::updateTime($projectId, $issueId, $issueInnerId, $newTime) === 0) {
-                        throw new Exception('Problem z aktualizacją czasu w issue: ' . print_r($newTime, 1) . ' - ' . print_r($data, 1));
-                    }
-                    $registeredTime = $newTime - $previousTime;
-                    if ($registeredTime !== 0 && !Time::addTime($projectId, $issueInnerId, $username, $registeredTime)) {
-                        throw new Exception('Problem z dodaniem czasu usera: ' . print_r($registeredTime, 1) . ' - ' . print_r($data, 1));
+                    $newTime = (int)$gitlabTime['total_time_spent'];
+                    if ($newTime !== $previousTime) {
+                        if (Issue::updateTime($projectId, $issueId, $issueInnerId, $newTime) === 0) {
+                            throw new Exception('Problem z aktualizacją czasu w issue: ' . print_r($newTime, 1) . ' - ' . print_r($data, 1));
+                        }
+                        $registeredTime = $newTime - $previousTime;
+                        if (!Time::addTime($projectId, $issueInnerId, $username, $registeredTime)) {
+                            throw new Exception('Problem z dodaniem czasu usera: ' . print_r($registeredTime, 1) . ' - ' . print_r($data, 1));
+                        }
                     }
                 }
             }

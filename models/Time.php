@@ -92,6 +92,17 @@ class Time extends ActiveRecord
             Yii::error('Brak usera o gitlab = ' . $user);
             return false;
         }
+        $previousEntry = static::find()->where([
+            'project_id' => $projectModel->project_id,
+            'issue_id' => $issue,
+            'user_id' => $userModel->id,
+            'seconds' => $time,
+        ])->limit(1)->one();
+        if ($previousEntry && $previousEntry->created_at > time() - 5) {
+            // 5 secs duplicate prevention
+            Yii::error('Duplikat wpisu czasowego');
+            return false;
+        }
         $timeModel = new static;
         $timeModel->project_id = $projectModel->project_id;
         $timeModel->issue_id = $issue;
