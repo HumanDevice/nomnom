@@ -95,7 +95,8 @@ class TimeSearch extends Time
         if ($this->to) {
             $sumQuery->andFilterWhere(['<=', 'time.created_at', Yii::$app->formatter->asTimestamp(date_create($this->to, timezone_open('Europe/Warsaw')))]);
         }
-        return $sumQuery->sum('seconds');
+        $summary = $sumQuery->sum('seconds');
+        return $this->formatSummary(is_numeric($summary) ? $summary : 0);
     }
 
     /**
@@ -141,8 +142,9 @@ class TimeSearch extends Time
             }
             $projects[$data['project_id']] += $data['seconds'];
         }
-        asort($employees, SORT_NATURAL);
-        asort($projects, SORT_NATURAL);
+        arsort($employees, SORT_NATURAL);
+        arsort($projects, SORT_NATURAL);
+
         return [
             'seconds' => $seconds,
             'employees' => $employees,
@@ -210,5 +212,32 @@ class TimeSearch extends Time
         $this->summary = $sumQuery->sum('seconds');
 
         return $dataProvider;
+    }
+
+    /**
+     * Formats number of seconds.
+     * Normally asDuration() could be used but here we need units smaller than days.
+     * @param int $seconds
+     * @return string
+     */
+    public function formatSummary($seconds)
+    {
+        $hours = floor($seconds / 60 / 60);
+        $left = $seconds - $hours * 60 * 60;
+        $minutes = floor($left / 60);
+        $left -= $minutes * 60;
+
+        $parts = [];
+        if ($hours > 0) {
+            $parts[] = Yii::t('yii', '{delta, plural, =1{1 hour} other{# hours}}', ['delta' => $hours]);
+        }
+        if ($minutes > 0) {
+            $parts[] = Yii::t('yii', '{delta, plural, =1{1 minute} other{# minutes}}', ['delta' => $minutes]);
+        }
+        if ($left > 0) {
+            $parts[] = Yii::t('yii', '{delta, plural, =1{1 second} other{# seconds}}', ['delta' => $left]);
+        }
+
+        return implode(', ', $parts);
     }
 }

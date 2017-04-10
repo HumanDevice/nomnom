@@ -61,7 +61,7 @@ $this->title = 'BimBam';
 <div class="row">
     <div class="col-lg-12 text-center">
         <div class="form-group">
-            <h3><i class="glyphicon glyphicon-time"></i> Łączny czas dla wybranych dat: <strong><?= Yii::$app->formatter->asDuration($searchModel->summary) ?></strong></h3>
+            <h3><i class="glyphicon glyphicon-time"></i> Łączny czas dla wybranych dat: <strong><?= $searchModel->formatSummary($searchModel->summary) ?></strong></h3>
         </div>
     </div>
 </div>

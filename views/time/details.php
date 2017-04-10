@@ -66,7 +66,7 @@ $this->title = 'BimBam Raport czasowy';
 <div class="row">
     <div class="col-lg-12 text-center">
         <div class="form-group">
-            <h3><i class="glyphicon glyphicon-time"></i> Łączny czas dla wybranych dat: <strong><?= Yii::$app->formatter->asDuration($searchModel->summary) ?></strong></h3>
+            <h3><i class="glyphicon glyphicon-time"></i> Łączny czas dla wybranych dat: <strong><?= $searchModel->formatSummary($searchModel->summary) ?></strong></h3>
         </div>
     </div>
 </div>
@@ -107,6 +107,7 @@ $this->title = 'BimBam Raport czasowy';
         [
             'attribute' => 'issue_id',
             'format' => 'raw',
+            'filterInputOptions' => ['class' => 'form-control', 'id' => null, 'placeholder' => 'ID'],
             'value' => function ($model) {
                 if (empty($model->issue_id)) {
                     return null;
@@ -117,7 +118,9 @@ $this->title = 'BimBam Raport czasowy';
         ],
         [
             'attribute' => 'seconds',
-            'format' => 'duration'
+            'value' => function ($model) {
+                return $model->formatSummary($model->seconds);
+            }
         ],
         [
             'attribute' => 'description',

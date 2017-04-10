@@ -142,4 +142,31 @@ class Time extends ActiveRecord
     {
         return $this->hasOne(User::class, ['id' => 'user_id']);
     }
+
+    /**
+     * Formats number of seconds.
+     * Normally asDuration() could be used but here we need units smaller than days.
+     * @param int $seconds
+     * @return string
+     */
+    public function formatSummary($seconds)
+    {
+        $hours = floor($seconds / 60 / 60);
+        $left = $seconds - $hours * 60 * 60;
+        $minutes = floor($left / 60);
+        $left -= $minutes * 60;
+
+        $parts = [];
+        if ($hours > 0) {
+            $parts[] = Yii::t('yii', '{delta, plural, =1{1 hour} other{# hours}}', ['delta' => $hours]);
+        }
+        if ($minutes > 0) {
+            $parts[] = Yii::t('yii', '{delta, plural, =1{1 minute} other{# minutes}}', ['delta' => $minutes]);
+        }
+        if ($left > 0) {
+            $parts[] = Yii::t('yii', '{delta, plural, =1{1 second} other{# seconds}}', ['delta' => $left]);
+        }
+
+        return implode(', ', $parts);
+    }
 }

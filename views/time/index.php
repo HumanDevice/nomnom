@@ -43,7 +43,7 @@ BootstrapPluginAsset::register($this);
 <div class="row">
     <div class="col-lg-12 text-center">
         <div class="form-group">
-            <h3><i class="glyphicon glyphicon-time"></i> Łączny czas: <strong><?= Yii::$app->formatter->asDuration($summary) ?></strong></h3>
+            <h3><i class="glyphicon glyphicon-time"></i> Łączny czas: <strong><?= $summary ?></strong></h3>
         </div>
     </div>
 </div>
@@ -111,7 +111,7 @@ BootstrapPluginAsset::register($this);
                             <tr>
                                 <td class="text-center"><?= $lp ?></td>
                                 <td class="text-center"><?= isset($users[$employee]) ? Html::encode($users[$employee]) : $employee ?></td>
-                                <td class="text-center"><?= Yii::$app->formatter->asDuration($seconds) ?></td>
+                                <td class="text-center"><?= $searchModel->formatSummary($seconds) ?></td>
                                 <td class="text-center"><?= $summaryTabs['seconds'] != 0 ? round($seconds * 100 / $summaryTabs['seconds'], 2) : '-' ?></td>
                             </tr>
                             <?php $lp++; endforeach; ?>
@@ -130,7 +130,7 @@ BootstrapPluginAsset::register($this);
                                 <tr>
                                     <td class="text-center"><?= $lp ?></td>
                                     <td class="text-center"><?= isset($projects[$project]) ? $projects[$project] : $project ?></td>
-                                    <td class="text-center"><?= Yii::$app->formatter->asDuration($seconds) ?></td>
+                                    <td class="text-center"><?= $searchModel->formatSummary($seconds) ?></td>
                                     <td class="text-center"><?= $summaryTabs['seconds'] != 0 ? round($seconds * 100 / $summaryTabs['seconds'], 2) : '-' ?></td>
                                 </tr>
                                 <?php $lp++; endforeach; ?>
