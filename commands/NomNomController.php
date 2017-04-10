@@ -164,4 +164,30 @@ class NomNomController extends Controller
 
         return Controller::EXIT_CODE_ERROR;
     }
+
+    /**
+     * Time reminder (9:00).
+     */
+    public function actionTime()
+    {
+        $lastDay = (int)date('t');
+        $today = (int)date('j');
+        $day = (int)date('w');
+        if ($lastDay === $today) {
+            Yii::$app->hipchat->send("@all Dziś ostatni dzień miesiąca!\nProsimy o sprawdzenie godzin rejestrowanych w BimBamie i TimeTrexie i uzupełnienie braków!", 'red');
+            return Controller::EXIT_CODE_NORMAL;
+        }
+        // notification for Friday before end of month
+        if ($day === 5) {
+            if ($lastDay - $today === 1) { // last day on Saturday
+                Yii::$app->hipchat->send("@all Jutro ostatni dzień miesiąca!\nProsimy o sprawdzenie godzin rejestrowanych w BimBamie i TimeTrexie i uzupełnienie braków!", 'red');
+                return Controller::EXIT_CODE_NORMAL;
+            }
+            if ($lastDay - $today === 2) { // last day on Sunday
+                Yii::$app->hipchat->send("@all Pojutrze ostatni dzień miesiąca!\nProsimy o sprawdzenie godzin rejestrowanych w BimBamie i TimeTrexie i uzupełnienie braków!", 'red');
+                return Controller::EXIT_CODE_NORMAL;
+            }
+        }
+        return Controller::EXIT_CODE_NORMAL;
+    }
 }
