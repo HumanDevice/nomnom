@@ -147,6 +147,10 @@ class BimbamController extends Controller
         foreach ($projects as $project) {
             $data[$project->project_id] = '[' . substr($project->url, 32,strrpos($project->url, '/') - 32) . '] ' . $project->name;
         }
+        $lastProject = Time::find()->where(['user_id' => Yii::$app->user->id])->orderBy(['id' => SORT_DESC])->limit(1)->one();
+        if ($lastProject) {
+            $model->project_id = $lastProject->project_id;
+        }
 
         return $this->render('add', [
             'model' => $model,
