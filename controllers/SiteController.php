@@ -37,7 +37,7 @@ class SiteController extends Controller
                 'class' => AccessControl::class,
                 'rules' => [
                     [
-                        'actions' => ['login', 'start', 'reset', 'newpass'],
+                        'actions' => ['login', 'start', 'reset', 'newpass', 'test', 'test-results'],
                         'allow' => true,
                         'roles' => ['?'],
                     ],
@@ -545,6 +545,31 @@ class SiteController extends Controller
             'searchModel'  => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
+    }
+
+    /**
+     * Test action for Szymon.
+     */
+    public function actionTest()
+    {
+        Yii::info([
+            'headers' => Yii::$app->request->headers,
+            'GET' => Yii::$app->request->get()
+        ], 'szymon');
+        die('OK');
+    }
+
+    /**
+     * Test action for Szymon.
+     */
+    public function actionTestResults()
+    {
+        $log = Yii::getAlias('@runtime/logs/szymon.log');
+        if (!file_exists($log)) {
+            die('LOG PUSTY');
+        }
+        echo file_get_contents($log);
+        die('OK');
     }
 
 //    public function beforeAction($action)

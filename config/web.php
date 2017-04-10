@@ -29,7 +29,14 @@ return [
                     'class' => 'yii\log\FileTarget',
                     'levels' => ['error', 'warning'],
                     'logVars' => ['_GET'],
-                    'except' => ['yii\web\HttpException:404']
+                    'except' => ['yii\web\HttpException:404', 'szymon']
+                ],
+                [
+                    'class' => 'yii\log\FileTarget',
+                    'levels' => ['info'],
+                    'logVars' => [],
+                    'categories' => ['szymon'],
+                    'logFile' => '@runtime/logs/szymon.log',
                 ],
             ],
         ],
