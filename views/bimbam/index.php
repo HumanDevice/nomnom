@@ -9,6 +9,16 @@ use yii\widgets\Pjax;
 
 $this->title = 'BimBam';
 
+$todayStart = date('Y-m-d 00:00');
+$todayEnd = date('Y-m-d 23:59');
+$this->registerJs(<<<JS
+$("#dateToday").click(function(e) {
+    e.preventDefault();
+    $("#dateFrom").val("$todayStart");
+    $("#dateTo").val("$todayEnd").trigger("change");
+})
+JS
+);
 ?>
 <?= $this->render('/menu/user') ?>
 <?= $this->render('/menu/admin', ['service' => 'bimbam']) ?>
@@ -35,24 +45,30 @@ $this->title = 'BimBam';
 </div>
 
 <div class="row">
-    <div class="col-sm-6">
+    <div class="col-sm-5">
         <div class="form-group">
             Od: <?= DateTimePicker::widget([
                 'name' => 'TimeSearch[from]',
                 'value' => $searchModel->from,
-                'options' => ['class' => 'date_range'],
+                'options' => ['class' => 'date_range', 'id' => 'dateFrom'],
                 'pluginOptions' => ['autoclose' => true],
             ]) ?>
         </div>
     </div>
-    <div class="col-sm-6">
+    <div class="col-sm-5">
         <div class="form-group">
             Do: <?= DateTimePicker::widget([
                 'name' => 'TimeSearch[to]',
                 'value' => $searchModel->to,
-                'options' => ['class' => 'date_range'],
+                'options' => ['class' => 'date_range', 'id' => 'dateTo'],
                 'pluginOptions' => ['autoclose' => true],
             ]) ?>
+        </div>
+    </div>
+    <div class="col-sm-2">
+        <div class="form-group">
+            <br>
+            <button class="btn btn-primary btn-block" id="dateToday">Dzisiaj</button>
         </div>
     </div>
 </div>
