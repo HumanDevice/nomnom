@@ -37,7 +37,7 @@ class SiteController extends Controller
                 'class' => AccessControl::class,
                 'rules' => [
                     [
-                        'actions' => ['login', 'start', 'reset', 'newpass', 'test', 'test-results'],
+                        'actions' => ['login', 'start', 'reset', 'newpass'],
                         'allow' => true,
                         'roles' => ['?'],
                     ],
@@ -546,70 +546,4 @@ class SiteController extends Controller
             'dataProvider' => $dataProvider,
         ]);
     }
-
-    /**
-     * Test action for Szymon.
-     */
-    public function actionTest()
-    {
-        Yii::info([
-            'headers' => Yii::$app->request->headers,
-            'GET' => Yii::$app->request->get()
-        ], 'szymon');
-        die('OK');
-    }
-
-    /**
-     * Test action for Szymon.
-     */
-    public function actionTestResults()
-    {
-        $log = Yii::getAlias('@runtime/logs/szymon.log');
-        if (!file_exists($log)) {
-            die('LOG PUSTY');
-        }
-        echo file_get_contents($log);
-        die('OK');
-    }
-
-//    public function beforeAction($action)
-//    {
-//        if (parent::beforeAction($action) && isset($_SERVER['HTTP_USER_AGENT'])) {
-//            $ua = strtolower($_SERVER['HTTP_USER_AGENT']);
-//            if(stripos($ua,'android') !== false) {
-//                echo '<pre>██╗   ██╗ ██████╗ ██╗   ██╗
-//╚██╗ ██╔╝██╔═══██╗██║   ██║
-// ╚████╔╝ ██║   ██║██║   ██║
-//  ╚██╔╝  ██║   ██║██║   ██║
-//   ██║   ╚██████╔╝╚██████╔╝
-//   ╚═╝    ╚═════╝  ╚═════╝
-//
-//██╗  ██╗ █████╗ ██╗   ██╗███████╗
-//██║  ██║██╔══██╗██║   ██║██╔════╝
-//███████║███████║██║   ██║█████╗
-//██╔══██║██╔══██║╚██╗ ██╔╝██╔══╝
-//██║  ██║██║  ██║ ╚████╔╝ ███████╗
-//╚═╝  ╚═╝╚═╝  ╚═╝  ╚═══╝  ╚══════╝
-//
-//██████╗ ███████╗███████╗███╗   ██╗
-//██╔══██╗██╔════╝██╔════╝████╗  ██║
-//██████╔╝█████╗  █████╗  ██╔██╗ ██║
-//██╔══██╗██╔══╝  ██╔══╝  ██║╚██╗██║
-//██████╔╝███████╗███████╗██║ ╚████║
-//╚═════╝ ╚══════╝╚══════╝╚═╝  ╚═══╝
-//
-//██╗  ██╗ █████╗ ██╗  ██╗██╗  ██╗███████╗██████╗ ██╗
-//██║  ██║██╔══██╗╚██╗██╔╝╚██╗██╔╝██╔════╝██╔══██╗██║
-//███████║███████║ ╚███╔╝  ╚███╔╝ █████╗  ██║  ██║██║
-//██╔══██║██╔══██║ ██╔██╗  ██╔██╗ ██╔══╝  ██║  ██║╚═╝
-//██║  ██║██║  ██║██╔╝ ██╗██╔╝ ██╗███████╗██████╔╝██╗
-//╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚═════╝ ╚═╝
-//                                                   </pre>';
-//
-//
-//                exit();
-//            }
-//        }
-//        return true;
-//    }
 }
