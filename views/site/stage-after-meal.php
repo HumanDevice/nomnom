@@ -6,6 +6,7 @@ use app\models\Order;
 use app\models\User;
 use yii\bootstrap\Modal;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\MaskedInput;
 
 $this->title = 'NomNom';
@@ -47,6 +48,9 @@ JS
     <div class="col-lg-12">
         <div class="form-group">
             <h3>Zamawiamy z</h3>
+            <?php if (Yii::$app->user->isAdmin): ?>
+            <a href="<?= Url::to(['site/notify', 'id' => $order->restaurant->id]) ?>" class="btn btn-warning pull-right">Powiadom kanał o przybyciu jedzenia z <?= Html::encode($order->restaurant->name) ?></a>
+            <?php endif; ?>
             <h3>
                 <strong>1. <?= Html::encode($order->restaurant->name) ?></strong>
                 <?php if (!empty($order->restaurant->url)): ?>
@@ -63,6 +67,9 @@ JS
                 <?php endif; ?>
             </h3>
             <?php if (!empty($order->restaurant2)): ?>
+            <?php if (Yii::$app->user->isAdmin): ?>
+            <a href="<?= Url::to(['site/notify', 'id' => $order->restaurant2->id]) ?>" class="btn btn-warning pull-right">Powiadom kanał o przybyciu jedzenia z <?= Html::encode($order->restaurant2->name) ?></a>
+            <?php endif; ?>
             <h3>
                 <strong>2. <?= Html::encode($order->restaurant2->name) ?></strong>
                 <?php if (!empty($order->restaurant2->url)): ?>

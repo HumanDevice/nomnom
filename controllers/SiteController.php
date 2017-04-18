@@ -20,6 +20,7 @@ use Yii;
 use yii\db\Query;
 use yii\filters\AccessControl;
 use yii\helpers\FileHelper;
+use yii\helpers\Html;
 use yii\web\Controller;
 use yii\web\UploadedFile;
 
@@ -545,5 +546,44 @@ class SiteController extends Controller
             'searchModel'  => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
+    }
+
+    /**
+     * Notifies hipchat.
+     * @param int $id restaurant ID
+     */
+    public function actionNotify($id)
+    {
+        if (!Yii::$app->user->isAdmin) {
+            $this->err('Tylko administracja ma tu dostęp!');
+            return $this->redirect(['site/index']);
+        }
+        $emot = '';
+        $emotRestaurants = [
+            2 => 'marco',
+            3 => 'kebabig',
+            4 => 'manu',
+            6 => 'pizza',
+            7 => 'pizza',
+            12 => 'pizza',
+            13 => 'pizza',
+            18 => 'phoviet',
+            26 => 'pasibus',
+            27 => 'pyza',
+            30 => 'pizza'
+        ];
+        if (isset($emotRestaurants[(int)$id])) {
+            $emot = '(' . $emotRestaurants[(int)$id] . ')';
+        }
+
+        if ($emot === '') {
+            $restaurant = Restaurant::findOne($id);
+            if ($restaurant) {
+                $emot = Html::encode($restaurant->name);
+            }
+        }
+
+        Yii::$app->hipchat->send("@all (chompy) $emot", 'green');
+        return $this->redirect(['site/index']);
     }
 }
