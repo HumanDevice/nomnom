@@ -20,7 +20,7 @@
   "minimum-stability": "stable",
   "require": {
     "php": ">=5.4.0",
-    "yiisoft/yii2": ">=2.0.5",
+    "yiisoft/yii2": "~2.0.10",
     "yiisoft/yii2-bootstrap": "*",
     "yiisoft/yii2-swiftmailer": "*",
     "yiisoft/yii2-httpclient": "~2.0.0",
@@ -29,7 +29,13 @@
     "kartik-v/yii2-widget-select2": "*"
   },
   "config": {
-    "process-timeout": 1800
+    "process-timeout": 1800,
+    "fxp-asset":{
+      "installer-paths": {
+        "npm-asset-library": "vendor/npm",
+        "bower-asset-library": "vendor/bower"
+      }
+    }
   },
   "scripts": {
     "post-create-project-cmd": [
@@ -48,10 +54,6 @@
       "generateCookieValidationKey": [
         "config/web.php"
       ]
-    },
-    "asset-installer-paths": {
-      "npm-asset-library": "vendor/npm",
-      "bower-asset-library": "vendor/bower"
     }
   }
 }
