@@ -6,6 +6,7 @@ use app\models\Hour;
 use app\models\HourSearch;
 use Yii;
 use yii\filters\AccessControl;
+use yii\helpers\HtmlPurifier;
 use yii\web\Controller;
 
 class TiktakController extends Controller
@@ -45,7 +46,7 @@ class TiktakController extends Controller
                 $provider = file_get_contents('http://jakitydzien.pl/');
                 if (($start = strpos($provider, '<h1>')) !== false) {
                     if (($end = strpos($provider, '</h1>')) !== false) {
-                        $week = trim(substr($provider, $start + 4, $end - $start - 4));
+                        $week = HtmlPurifier::process(strip_tags(trim(substr($provider, $start + 4, $end - $start - 4))));
                     }
                 }
                 Yii::$app->cache->set('week', $week, 3600);
