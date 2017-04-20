@@ -124,6 +124,9 @@ JS
                 <?php endif; ?>
             </h3>
             <?php endif ?>
+            <?php if (!empty($order->nextRestaurant)): ?>
+                <span class="text-muted">Następna niewybrana restauracja: <?= Html::encode($order->nextRestaurant->name) ?></span>
+            <?php endif; ?>
             <hr>
         </div>
     </div>
