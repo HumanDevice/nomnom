@@ -26,7 +26,6 @@ $("#edit").on("show.bs.modal", function(e) {
 JS
     );
 }
-
 ?>
 <?= $this->render('/menu/user', ['service' => 'nomnom']) ?>
 <?= $this->render('/menu/admin', ['service' => 'nomnom']) ?>
@@ -65,6 +64,9 @@ JS
                 <?php if ($order->restaurant->phone): ?>
                 <small>Telefon: <?= $order->restaurant->phone ?></small>
                 <?php endif; ?>
+                <?php if ($order->restaurant->comment && Yii::$app->user->isAdmin): ?>
+                <br><small class="text-muted"><?= $order->restaurant->comment ?></small>
+                <?php endif; ?>
             </h3>
             <?php if (!empty($order->restaurant2)): ?>
             <?php if (Yii::$app->user->isAdmin): ?>
@@ -83,6 +85,9 @@ JS
                 <?php endif; ?>
                 <?php if ($order->restaurant2->phone): ?>
                 <small>Telefon: <?= $order->restaurant2->phone ?></small>
+                <?php endif; ?>
+                <?php if ($order->restaurant2->comment && Yii::$app->user->isAdmin): ?>
+                <br><small class="text-muted"><?= $order->restaurant2->comment ?></small>
                 <?php endif; ?>
             </h3>
             <?php endif; ?>

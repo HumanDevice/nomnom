@@ -23,6 +23,7 @@ use yii\web\UploadedFile;
  * @property integer $updated_at
  * @property integer $deleted
  * @property string $phone
+ * @property string $comment
  *
  * @property string $restaurantName
  * @property string $short
@@ -60,7 +61,7 @@ class Restaurant extends ActiveRecord
             [['preferred', 'stay'], 'boolean'],
             ['url', 'url', 'defaultScheme' => 'http'],
             ['screen', 'image', 'extensions' => 'png, jpg, gif', 'maxWidth' => 3000, 'maxHeight' => 3000, 'mimeTypes' => 'image/*', 'maxSize' => 5 * 1024 * 1024],
-            [['name', 'url', 'phone'], 'string', 'max' => 255],
+            [['name', 'url', 'phone', 'comment'], 'string', 'max' => 255],
         ];
     }
 
@@ -76,7 +77,8 @@ class Restaurant extends ActiveRecord
             'phone' => 'Telefon',
             'screen' => 'Zdjęcie menu opcjonalnie',
             'max' => 'Maksymalna ilość restauracji, z których można zamówić na raz',
-            'preferred' => 'Wszyscy mogą tu zamawiać'
+            'preferred' => 'Wszyscy mogą tu zamawiać',
+            'comment' => 'Komentarz admina',
         ];
     }
 

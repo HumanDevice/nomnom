@@ -39,6 +39,7 @@ $this->title = 'NomNomAdmin Restauracje';
             'format' => 'raw',
             'value' => !empty($model->screen) ? Html::a('Zobacz', '/uploads/menu/' . $model->screen, ['target' => 'menu']) : null
         ],
+        'comment',
     ]
 ]); ?>
 

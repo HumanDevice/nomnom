@@ -50,11 +50,12 @@ $this->title = 'NomNomAdmin Restauracje';
             <?php if (!$model->isNewRecord && !empty($model->screen)): ?>
             Zdjęcie: <?= Html::a($model->screen, '/uploads/menu/' . $model->screen, ['target' => 'menu']) ?>
             <?= $form->field($model, 'stay')->checkbox() ?>
-            <?php endif ?>
+            <?php endif; ?>
             <?= $form->field($model, 'max') ?>
             <?php if ($model->isNewRecord): ?>
             <?= $form->field($model, 'preferred')->checkbox() ?>
-            <?php endif ?>
+            <?php endif; ?>
+            <?= $form->field($model, 'comment') ?>
             <div class="form-group">
                 <div class="col-lg-offset-2 col-lg-10">
                     <?= Html::submitButton('Zapisz', ['class' => 'btn btn-primary']) ?>
