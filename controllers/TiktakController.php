@@ -46,7 +46,8 @@ class TiktakController extends Controller
                 $provider = file_get_contents('http://jakitydzien.pl/');
                 if (($start = strpos($provider, '<h1>')) !== false) {
                     if (($end = strpos($provider, '</h1>')) !== false) {
-                        $week = HtmlPurifier::process(strip_tags(trim(substr($provider, $start + 4, $end - $start - 4))));
+                        $week = str_replace('<', ' <', trim(substr($provider, $start + 4, $end - $start - 4)));
+                        $week = preg_replace('/\s+/', ' ', HtmlPurifier::process(strip_tags($week)));
                     }
                 }
                 Yii::$app->cache->set('week', $week, 3600);
