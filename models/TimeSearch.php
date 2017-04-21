@@ -2,8 +2,6 @@
 
 namespace app\models;
 
-use const SORT_NATURAL;
-use function var_dump;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
@@ -35,6 +33,10 @@ class TimeSearch extends Time
      * @var string date to
      */
     public $to;
+    /**
+     * @var array off days
+     */
+    public $offdays = [];
 
     /**
      * @inheritdoc
@@ -163,6 +165,7 @@ class TimeSearch extends Time
             ->joinWith(['project', 'project.groups', 'issue'])
             ->groupBy(['group_project.project_id', 'time.id']);
         $sumQuery = Time::find();
+        $offQuery = Calendar::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -172,6 +175,19 @@ class TimeSearch extends Time
         ]);
 
         $this->load($params);
+
+        if ($this->from) {
+            $query->andFilterWhere(['>=', 'time.created_at', Yii::$app->formatter->asTimestamp(date_create($this->from, timezone_open('Europe/Warsaw')))]);
+            $sumQuery->andFilterWhere(['>=', 'time.created_at', Yii::$app->formatter->asTimestamp(date_create($this->from, timezone_open('Europe/Warsaw')))]);
+            $offQuery->andFilterWhere(['>=', 'offday', Yii::$app->formatter->asDate(date_create($this->from, timezone_open('Europe/Warsaw')), 'y-MM-dd')]);
+        }
+        if ($this->to) {
+            $query->andFilterWhere(['<=', 'time.created_at', Yii::$app->formatter->asTimestamp(date_create($this->to, timezone_open('Europe/Warsaw')))]);
+            $sumQuery->andFilterWhere(['<=', 'time.created_at', Yii::$app->formatter->asTimestamp(date_create($this->to, timezone_open('Europe/Warsaw')))]);
+            $offQuery->andFilterWhere(['<=', 'offday', Yii::$app->formatter->asDate(date_create($this->to, timezone_open('Europe/Warsaw')), 'y-MM-dd')]);
+        }
+
+        $this->offdays = $offQuery->asArray()->all();
 
         if (!$this->validate()) {
             $this->summary = $sumQuery->sum('seconds');
@@ -200,14 +216,6 @@ class TimeSearch extends Time
             ->andFilterWhere(['time.project_id' => $projectsFromGroup])
             ->andFilterWhere(['time.issue_id' => $this->issue_id])
             ->andFilterWhere(['like', 'time.description', $this->description]);
-        if ($this->from) {
-            $query->andFilterWhere(['>=', 'time.created_at', Yii::$app->formatter->asTimestamp(date_create($this->from, timezone_open('Europe/Warsaw')))]);
-            $sumQuery->andFilterWhere(['>=', 'time.created_at', Yii::$app->formatter->asTimestamp(date_create($this->from, timezone_open('Europe/Warsaw')))]);
-        }
-        if ($this->to) {
-            $query->andFilterWhere(['<=', 'time.created_at', Yii::$app->formatter->asTimestamp(date_create($this->to, timezone_open('Europe/Warsaw')))]);
-            $sumQuery->andFilterWhere(['<=', 'time.created_at', Yii::$app->formatter->asTimestamp(date_create($this->to, timezone_open('Europe/Warsaw')))]);
-        }
 
         $this->summary = $sumQuery->sum('seconds');
 
@@ -222,6 +230,11 @@ class TimeSearch extends Time
      */
     public function formatSummary($seconds)
     {
+        $minus = false;
+        if ($seconds < 0) {
+            $minus = true;
+            $seconds *= -1;
+        }
         $hours = floor($seconds / 60 / 60);
         $left = $seconds - $hours * 60 * 60;
         $minutes = floor($left / 60);
@@ -238,6 +251,73 @@ class TimeSearch extends Time
             $parts[] = Yii::t('yii', '{delta, plural, =1{1 second} other{# seconds}}', ['delta' => $left]);
         }
 
-        return implode(', ', $parts);
+        return ($minus ? '-' : '') . implode(', ', $parts);
+    }
+
+    /**
+     * Returns number of working days in current month
+     * @return int
+     */
+    public function currentMonthWorkingDays()
+    {
+        $allDays = (int)date('t');
+        $offDays = Calendar::find()->where(['like', 'offday', date('Y-m-') . '%', false])->count();
+        return $allDays - $offDays;
+    }
+
+    /**
+     * Returns number of working seconds spent in current month so far.
+     * @return int
+     */
+    public function currentMonthWorkingTime()
+    {
+        $allDays = (int)date('j');
+        $offDays = Calendar::find()->where(['and',
+            ['>=', 'offday', date('Y-m-01')],
+            ['<=', 'offday', date('Y-m-d')]
+        ])->count();
+        return ($allDays - $offDays) * 8 * 3600;
+    }
+
+    /**
+     * Returns number of working seconds spent in current month so far for given user.
+     * @param int $user
+     * @return int
+     */
+    public function currentMonthWorkingTimeOf($user)
+    {
+        return Time::find()->where(['and',
+            ['user_id' => $user],
+            ['>=', 'created_at', Yii::$app->formatter->asTimestamp(date_create(date('Y-m-01 00:00:00'), timezone_open('Europe/Warsaw')))],
+            ['<=', 'created_at', Yii::$app->formatter->asTimestamp(date_create(date('Y-m-d 23:59:59'), timezone_open('Europe/Warsaw')))],
+        ])->sum('seconds');
+    }
+
+    /**
+     * Returns number of working seconds spent in previous month so far.
+     * @return int
+     */
+    public function previousMonthWorkingTime()
+    {
+        $allDays = (int)date('t', strtotime('-1 month'));
+        $offDays = Calendar::find()->where(['and',
+            ['>=', 'offday', date('Y-m-01', strtotime('-1 month'))],
+            ['<=', 'offday', date('Y-m-d', strtotime('-1 month'))]
+        ])->count();
+        return ($allDays - $offDays) * 8 * 3600;
+    }
+
+    /**
+     * Returns number of working seconds spent in previous month for given user.
+     * @param int $user
+     * @return int
+     */
+    public function previousMonthWorkingTimeOf($user)
+    {
+        return Time::find()->where(['and',
+            ['user_id' => $user],
+            ['>=', 'created_at', Yii::$app->formatter->asTimestamp(date_create(date('Y-m-01 00:00:00', strtotime('-1 month')), timezone_open('Europe/Warsaw')))],
+            ['<=', 'created_at', Yii::$app->formatter->asTimestamp(date_create(date('Y-m-d 23:59:59', strtotime('-1 month')), timezone_open('Europe/Warsaw')))],
+        ])->sum('seconds');
     }
 }

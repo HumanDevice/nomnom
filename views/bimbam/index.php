@@ -19,6 +19,14 @@ $("#dateToday").click(function(e) {
 })
 JS
 );
+
+$monthWorkingDays = $searchModel->currentMonthWorkingDays();
+$monthWorkingHours = $monthWorkingDays * 8;
+$currentWorkingTime = $searchModel->currentMonthWorkingTime();
+$currentWorkingUserTime = $searchModel->currentMonthWorkingTimeOf(Yii::$app->user->id);
+$previousWorkingTime = $searchModel->previousMonthWorkingTime();
+$previousWorkingUserTime = $searchModel->previousMonthWorkingTimeOf(Yii::$app->user->id);
+
 ?>
 <?= $this->render('/menu/user') ?>
 <?= $this->render('/menu/admin', ['service' => 'bimbam']) ?>
@@ -75,9 +83,37 @@ JS
 
 <?php Pjax::begin() ?>
 <div class="row">
-    <div class="col-lg-12 text-center">
+    <div class="col-lg-12">
         <div class="form-group">
-            <h3><i class="glyphicon glyphicon-time"></i> Łączny czas dla wybranych dat: <strong><?= $searchModel->formatSummary($searchModel->summary) ?></strong></h3>
+            <table class="table table-striped table-hover table-bordered">
+                <tr class="info">
+                    <th class="text-center">Łączny czas dla wybranych dat</th>
+                    <td class="text-center" colspan="2"><strong><?= $searchModel->formatSummary($searchModel->summary) ?></strong></td>
+                </tr>
+                <tr>
+                    <th class="text-center">Ilość dni (godzin) pracujących w tym miesiącu *</th>
+                    <td class="text-center" colspan="2"><?= $monthWorkingDays ?> (<?= $monthWorkingHours ?>)</td>
+                </tr>
+                <tr>
+                    <th class="text-center">Aktualny czas pracy w tym miesiącu *</th>
+                    <td class="text-center" colspan="2"><?= $searchModel->formatSummary($currentWorkingTime) ?></td>
+                </tr>
+                <tr class="<?= $currentWorkingUserTime < $currentWorkingTime ? 'danger' : 'success' ?>">
+                    <th class="text-center">Mój czas pracy w tym miesiącu</th>
+                    <td class="text-center"><?= $searchModel->formatSummary($currentWorkingUserTime) ?></td>
+                    <td class="text-center"><?= $searchModel->formatSummary($currentWorkingUserTime - $currentWorkingTime) ?> *</td>
+                </tr>
+                <tr>
+                    <td class="text-center text-muted">Czas pracy w poprzednim miesiącu *</td>
+                    <td class="text-center text-muted" colspan="2"><?= $searchModel->formatSummary($previousWorkingTime) ?></td>
+                </tr>
+                <tr class="<?= $previousWorkingUserTime < $previousWorkingTime ? 'danger' : 'success' ?>">
+                    <td class="text-center text-muted">Mój czas pracy w poprzednim miesiącu</td>
+                    <td class="text-center text-muted"><?= $searchModel->formatSummary($previousWorkingUserTime) ?></td>
+                    <td class="text-center text-muted"><?= $searchModel->formatSummary($previousWorkingUserTime - $previousWorkingTime) ?> *</td>
+                </tr>
+            </table>
+            <p class="small text-muted">* dotyczy pracujących na cały etat</p>
         </div>
     </div>
 </div>

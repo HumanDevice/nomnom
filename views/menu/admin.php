@@ -11,7 +11,7 @@ if (!isset($service)) {
 ?>
 <?php if (!Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin): ?>
 <div class="row">
-    <div class="col-lg-4">
+    <div class="col-lg-<?= $service === 'bimbam' ? '3' : '4' ?>">
         <div class="form-group">
             <a href="<?= Url::to(['users/index']) ?>" class="btn btn-<?= $active == 'u' ? 'danger' : 'default' ?> btn-lg btn-block"><i class="glyphicon glyphicon-user"></i> Użytkownicy</a>
         </div>
@@ -29,14 +29,19 @@ if (!isset($service)) {
     </div>
 <?php endif; ?>
 <?php if ($service === 'bimbam'): ?>
-    <div class="col-lg-4">
+    <div class="col-lg-3">
         <div class="form-group">
             <a href="<?= Url::to(['time/index']) ?>" class="btn btn-<?= $active == 't' ? 'danger' : 'default' ?> btn-lg btn-block"><i class="glyphicon glyphicon-time"></i> Raport czasowy</a>
         </div>
     </div>
-    <div class="col-lg-4">
+    <div class="col-lg-3">
         <div class="form-group">
             <a href="<?= Url::to(['projects/index']) ?>" class="btn btn-<?= $active == 'p' ? 'danger' : 'default' ?> btn-lg btn-block"><i class="glyphicon glyphicon-folder-open"></i> Grupy</a>
+        </div>
+    </div>
+    <div class="col-lg-3">
+        <div class="form-group">
+            <a href="<?= Url::to(['calendar/index']) ?>" class="btn btn-<?= $active == 'k' ? 'danger' : 'default' ?> btn-lg btn-block"><i class="glyphicon glyphicon-calendar"></i> Kalendarz</a>
         </div>
     </div>
 <?php endif; ?>

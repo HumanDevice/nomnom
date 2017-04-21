@@ -14,6 +14,10 @@ use yii\filters\AccessControl;
 use yii\helpers\Json;
 use yii\web\Controller;
 
+/**
+ * Class BimbamController
+ * @package app\controllers
+ */
 class BimbamController extends Controller
 {
     use FlashTrait;
