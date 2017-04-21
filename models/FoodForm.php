@@ -4,6 +4,7 @@ namespace app\models;
 
 use Yii;
 use yii\base\Model;
+use yii\db\Query;
 use yii\helpers\FileHelper;
 use yii\web\UploadedFile;
 
@@ -103,6 +104,22 @@ class FoodForm extends Model
             if (!in_array($this->with, array_keys($availableList))) {
                 return 'Wybrany współbiesiadnik już prawdopodobnie zamówił!';
             }
+        }
+
+        if (!in_array($this->restaurant, [$order->restaurant_id, $order->restaurant2_id])) {
+            return 'Nieprawidłowa restauracja!';
+        }
+
+        $vote = (new Query)
+            ->from(OrderChoice::tableName())
+            ->where([
+                'order_id' => $order->id,
+                'author_id' => Yii::$app->user->id,
+            ])
+            ->limit(1)->one();
+        if (isset($vote['restaurant_id']) && $vote['restaurant_id'] != $this->restaurant
+            && in_array($vote['restaurant_id'], [$order->restaurant_id, $order->restaurant2_id])) {
+            return 'Hej! Wybrano Twoją wymarzoną restaurację, a Ty zamawiasz z innej? Tak nie wolno!';
         }
 
         $food = new OrderFood;

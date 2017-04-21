@@ -22,8 +22,11 @@ use yii\filters\AccessControl;
 use yii\helpers\FileHelper;
 use yii\helpers\Html;
 use yii\web\Controller;
-use yii\web\UploadedFile;
 
+/**
+ * Class SiteController
+ * @package app\controllers
+ */
 class SiteController extends Controller
 {
     use FlashTrait;
@@ -150,9 +153,7 @@ class SiteController extends Controller
         if ($model->load(Yii::$app->request->post()) && $model->start()) {
             return $this->goHome();
         }
-        return $this->render('start', [
-            'model' => $model,
-        ]);
+        return $this->render('start', ['model' => $model]);
     }
 
     /**
@@ -202,18 +203,14 @@ class SiteController extends Controller
             $model->restaurant = $order->restaurant_id;
         }
         if ($model->load(Yii::$app->request->post())) {
-            $model->screen = null;//UploadedFile::getInstance($model, 'screen');
+            $model->screen = null;
             if ($model->validate()) {
-//                if (empty($model->code) && empty($model->screen)) {
-//                    $model->addError('code', 'Musisz wskazać, co chcesz zamówić.');
-//                } else {
                 $result = $model->order();
                 if ($result === true) {
                     $this->ok('Zamówienie złożone.');
                     return $this->goHome();
                 }
                 $this->err($result);
-//                }
             }
         }
 
@@ -224,11 +221,19 @@ class SiteController extends Controller
                 ['with' => Yii::$app->user->id]
             ]
         ])->limit(1)->one();
+        $vote = (new Query)
+            ->from(OrderChoice::tableName())
+            ->where([
+                'order_id' => $order->id,
+                'author_id' => Yii::$app->user->id,
+            ])
+            ->limit(1)->one();
 
         return $this->render('stage-meal', [
             'model' => $model,
             'order' => $order,
             'ordered' => $ordered,
+            'vote' => $vote,
             'dataProvider' => (new FoodSearch)->search($order->id)
         ]);
     }
@@ -263,6 +268,7 @@ class SiteController extends Controller
      * Voting.
      * @param int $order
      * @param int $restaurant
+     * @return \yii\web\Response
      */
     public function actionVote($order, $restaurant)
     {
@@ -306,6 +312,7 @@ class SiteController extends Controller
     /**
      * Unvoting.
      * @param int $order
+     * @return \yii\web\Response
      */
     public function actionUnvote($order)
     {
@@ -341,6 +348,7 @@ class SiteController extends Controller
     /**
      * Unorder.
      * @param int $order
+     * @return \yii\web\Response
      */
     public function actionUnorder($order)
     {
@@ -379,6 +387,7 @@ class SiteController extends Controller
     /**
      * Order the same.
      * @param int $food
+     * @return \yii\web\Response
      */
     public function actionOrder($food)
     {
@@ -401,6 +410,19 @@ class SiteController extends Controller
         }
         if ($chosenFood->author_id == 22) {
             $this->err('Zamówienia szefa nie można kopiować!');
+            return $this->goBack();
+        }
+
+        $vote = (new Query)
+            ->from(OrderChoice::tableName())
+            ->where([
+                'order_id' => $chosenFood->order_id,
+                'author_id' => Yii::$app->user->id,
+            ])
+            ->limit(1)->one();
+        if (isset($vote['restaurant_id']) && $vote['restaurant_id'] != $chosenFood->restaurant_id
+            && in_array($vote['restaurant_id'], [$chosenFood->order->restaurant_id, $chosenFood->order->restaurant2_id])) {
+            $this->err('Niestety to zamówienie nie znajduje się w Twojej wymarzonej restauracji! Nie możesz go skopiować!');
             return $this->goBack();
         }
 
@@ -475,6 +497,7 @@ class SiteController extends Controller
     /**
      * Takes money from account.
      * @param int $id
+     * @return \yii\web\Response
      */
     public function actionDebet($id)
     {
@@ -551,6 +574,7 @@ class SiteController extends Controller
     /**
      * Notifies hipchat.
      * @param int $id restaurant ID
+     * @return \yii\web\Response
      */
     public function actionNotify($id)
     {

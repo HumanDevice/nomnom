@@ -135,13 +135,31 @@ JS
 <?php $form = ActiveForm::begin(); ?>
 <div class="row">
     <div class="col-lg-12">
+        <?php if (!empty($order->restaurant2) && isset($vote['restaurant_id']) && ($vote['restaurant_id'] == $order->restaurant->id || $vote['restaurant_id'] == $order->restaurant2->id)): ?>
+        <div class="row">
+            <div class="col-lg-12 text-success">
+                <i class="glyphicon glyphicon-thumbs-up"></i> Super, mogę zamówić z mojej wybranej restauracji!
+            </div>
+        </div>
+        <?php endif; ?>
         <div class="row">
             <div class="col-lg-9">
                 <?php if (!empty($order->restaurant2)): ?>
-                <?= $form->field($model, 'restaurant')->radioList([
-                    $order->restaurant->id => $order->restaurant->name,
-                    $order->restaurant2->id => $order->restaurant2->name,
-                ]) ?>
+                <?php if (isset($vote['restaurant_id']) && ($vote['restaurant_id'] == $order->restaurant->id || $vote['restaurant_id'] == $order->restaurant2->id)) {
+                    if ($vote['restaurant_id'] == $order->restaurant->id) {
+                        $model->restaurant = $order->restaurant->id;
+                        $choice = [$order->restaurant->id => $order->restaurant->name];
+                    } else {
+                        $model->restaurant = $order->restaurant2->id;
+                        $choice = [$order->restaurant2->id => $order->restaurant2->name];
+                    }
+                } else {
+                    $choice = [
+                        $order->restaurant->id => $order->restaurant->name,
+                        $order->restaurant2->id => $order->restaurant2->name,
+                    ];
+                } ?>
+                <?= $form->field($model, 'restaurant')->radioList($choice) ?>
                 <?php else: ?>
                 <?= Html::activeHiddenInput($model, 'restaurant') ?>
                 <?php endif ?>
@@ -153,7 +171,6 @@ JS
         <div class="row">
             <div class="col-lg-9">
                 <?= $form->field($model, 'code')->textInput(['autofocus' => true])->hint('W przypadku Manufaktury podajemy zamówienie w kolejności: zupa, drugie danie, sałatki') ?>
-                <?php /*= $form->field($model, 'screen')->fileInput()*/ ?>
             </div>
             <div class="col-lg-3 text-right">
                 <?php if (Yii::$app->user->id != 22): ?>
@@ -213,4 +230,4 @@ JS
     'dataProvider' => $dataProvider,
     'itemView' => 'ordered',
     'viewParams' => ['ordered' => !empty($ordered)]
-]) ?>
+]);

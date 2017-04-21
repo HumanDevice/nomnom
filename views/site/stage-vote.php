@@ -129,7 +129,7 @@ JS
                         <a href="<?= Url::to(['site/vote', 'restaurant' => $id, 'order' => $order->id]) ?>" class="btn btn-success">Głosuję na to</a>
                         <?php endif ?>
                         <?php if ($voted && $voted['restaurant_id'] == $id): ?>
-                        <i class="glyphicon glyphicon-hand-left"></i> Mój głos
+                        <i class="glyphicon glyphicon-hand-left"></i> <strong>Dzisiaj jem tylko stąd!</strong>
                         <?php endif ?>
                     </td>
                 </tr>
