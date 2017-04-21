@@ -1,6 +1,6 @@
-# NomNom & TikTak
+# NomNom, TikTak & BimBam
 
-Food ordering and working hours system.
+Food ordering, working hours and tickets time system.
 
 ## Installation
 

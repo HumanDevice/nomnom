@@ -135,7 +135,7 @@ class NomNomController extends Controller
             return Controller::EXIT_CODE_NORMAL;
         }
         
-        Yii::$app->hipchat->send('@all Koniec wybierania posiłku.', 'green');
+        Yii::$app->hipchat->send('@all Koniec wybierania posiłku.', 'red');
         
         return Controller::EXIT_CODE_NORMAL;
     }
