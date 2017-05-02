@@ -20,6 +20,7 @@ $("#dateToday").click(function(e) {
 JS
 );
 
+/* @var $searchModel \app\models\TimeSearch */
 $monthWorkingDays = $searchModel->currentMonthWorkingDays();
 $monthWorkingHours = $monthWorkingDays * 8;
 $currentWorkingTime = $searchModel->currentMonthWorkingTime();

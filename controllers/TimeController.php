@@ -158,7 +158,7 @@ class TimeController extends Controller
         $time = Time::find()->where(['and',
             ['>=', 'time.created_at', Yii::$app->formatter->asTimestamp(date_create($from, timezone_open('Europe/Warsaw')))],
             ['<=', 'time.created_at', Yii::$app->formatter->asTimestamp(date_create($to, timezone_open('Europe/Warsaw')))],
-        ])->joinWith(['project', 'user']);
+        ])->joinWith(['project', 'user'])->orderBy(['time.created_at' => SORT_ASC]);
         $csv[] = [
             'Projekt',
             'URL',
@@ -172,13 +172,13 @@ class TimeController extends Controller
         foreach ($time->each() as $entry) {
             $csv[] = [
                 $this->formatCsv($entry->project->name),
-                $this->formatCsv($entry->project->url),
+                $this->formatCsv($entry->issue_id ? $entry->project->url . '/issues/' . $entry->issue_id : $entry->project->url),
                 $this->formatCsv($entry->user->username),
                 $entry->issue_id,
                 $entry->seconds,
                 $this->formatTime($entry->seconds),
                 $this->formatCsv($entry->description),
-                Yii::$app->formatter->asDate($entry->created_at, 'y-M-d')
+                Yii::$app->formatter->asDate($entry->created_at, 'y-MM-dd')
             ];
         }
         $content = [];

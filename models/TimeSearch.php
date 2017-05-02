@@ -241,7 +241,7 @@ class TimeSearch extends Time
         $left -= $minutes * 60;
 
         $parts = [];
-        if ($hours > 0) {
+        if ($hours > 0 || $seconds === 0) {
             $parts[] = Yii::t('yii', '{delta, plural, =1{1 hour} other{# hours}}', ['delta' => $hours]);
         }
         if ($minutes > 0) {
@@ -286,11 +286,12 @@ class TimeSearch extends Time
      */
     public function currentMonthWorkingTimeOf($user)
     {
-        return Time::find()->where(['and',
+        $sum = Time::find()->where(['and',
             ['user_id' => $user],
             ['>=', 'created_at', Yii::$app->formatter->asTimestamp(date_create(date('Y-m-01 00:00:00'), timezone_open('Europe/Warsaw')))],
             ['<=', 'created_at', Yii::$app->formatter->asTimestamp(date_create(date('Y-m-d 23:59:59'), timezone_open('Europe/Warsaw')))],
         ])->sum('seconds');
+        return $sum ?: 0;
     }
 
     /**
@@ -299,10 +300,10 @@ class TimeSearch extends Time
      */
     public function previousMonthWorkingTime()
     {
-        $allDays = (int)date('t', strtotime('-1 month'));
+        $allDays = (int)date('t', strtotime('last month'));
         $offDays = Calendar::find()->where(['and',
-            ['>=', 'offday', date('Y-m-01', strtotime('-1 month'))],
-            ['<=', 'offday', date('Y-m-d', strtotime('-1 month'))]
+            ['>=', 'offday', date('Y-m-01', strtotime('last month'))],
+            ['<=', 'offday', date('Y-m-t', strtotime('last month'))]
         ])->count();
         return ($allDays - $offDays) * 8 * 3600;
     }
@@ -314,10 +315,11 @@ class TimeSearch extends Time
      */
     public function previousMonthWorkingTimeOf($user)
     {
-        return Time::find()->where(['and',
+        $sum = Time::find()->where(['and',
             ['user_id' => $user],
-            ['>=', 'created_at', Yii::$app->formatter->asTimestamp(date_create(date('Y-m-01 00:00:00', strtotime('-1 month')), timezone_open('Europe/Warsaw')))],
-            ['<=', 'created_at', Yii::$app->formatter->asTimestamp(date_create(date('Y-m-d 23:59:59', strtotime('-1 month')), timezone_open('Europe/Warsaw')))],
+            ['>=', 'created_at', Yii::$app->formatter->asTimestamp(date_create(date('Y-m-01 00:00:00', strtotime('last month')), timezone_open('Europe/Warsaw')))],
+            ['<=', 'created_at', Yii::$app->formatter->asTimestamp(date_create(date('Y-m-t 23:59:59', strtotime('last month')), timezone_open('Europe/Warsaw')))],
         ])->sum('seconds');
+        return $sum ?: 0;
     }
 }
