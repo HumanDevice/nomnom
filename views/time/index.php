@@ -9,6 +9,11 @@ use yii\widgets\ActiveForm;
 
 $this->title = 'BimBam Raport czasowy';
 
+/* @var $searchModel \app\models\TimeSearch */
+$monthWorkingHours = $searchModel->currentMonthWorkingDays() * 8;
+$monthWorkingSeconds = $monthWorkingHours * 3600;
+$prevMonthWorkingSeconds = $searchModel->previousMonthWorkingTime();
+
 BootstrapPluginAsset::register($this);
 ?>
 <?= $this->render('/menu/user') ?>
@@ -102,17 +107,24 @@ BootstrapPluginAsset::register($this);
                         <br>
                         <table class="table table-striped">
                             <tr>
-                                <th class="text-center">Lp.</th>
-                                <th class="text-center">Pracownik</th>
-                                <th class="text-center">Czas</th>
-                                <th class="text-center">%</th>
+                                <th class="text-center" rowspan="2">Lp.</th>
+                                <th class="text-center" rowspan="2">Pracownik</th>
+                                <th class="text-center" rowspan="2">Czas [h]</th>
+                                <th class="text-center" rowspan="2">Czas / filtr [%]</th>
+                                <th class="text-center" colspan="2">Skuteczność [%]</th>
+                            </tr>
+                            <tr>
+                                <th class="text-center"><?= date('m/Y') ?> (<?= $monthWorkingHours ?>h)</th>
+                                <th class="text-center"><?= date('m/Y', strtotime('last month')) ?> (<?= $prevMonthWorkingSeconds / 3600 ?>h)</th>
                             </tr>
                             <?php $lp = 1; foreach ($summaryTabs['employees'] as $employee => $seconds): ?>
                             <tr>
                                 <td class="text-center"><?= $lp ?></td>
                                 <td class="text-center"><?= isset($users[$employee]) ? Html::encode($users[$employee]) : $employee ?></td>
-                                <td class="text-center"><?= $searchModel->formatSummary($seconds) ?></td>
-                                <td class="text-center"><?= $summaryTabs['seconds'] != 0 ? round($seconds * 100 / $summaryTabs['seconds'], 2) : '-' ?></td>
+                                <td class="text-center"><?= $searchModel->formatSummary($seconds, true) ?></td>
+                                <td class="text-center"><?= $summaryTabs['seconds'] != 0 ? round($seconds * 100 / $summaryTabs['seconds'], 2) : '0' ?></td>
+                                <td class="text-center"><?= isset($summaryTabs['efficiency'][$employee]['curr']) && $monthWorkingSeconds != 0 ? round($summaryTabs['efficiency'][$employee]['curr'] * 100 / $monthWorkingSeconds, 2) : '0' ?></td>
+                                <td class="text-center"><?= isset($summaryTabs['efficiency'][$employee]['prev']) && $prevMonthWorkingSeconds != 0 ? round($summaryTabs['efficiency'][$employee]['prev'] * 100 / $prevMonthWorkingSeconds, 2) : '0' ?></td>
                             </tr>
                             <?php $lp++; endforeach; ?>
                         </table>
@@ -123,15 +135,15 @@ BootstrapPluginAsset::register($this);
                             <tr>
                                 <th class="text-center">Lp.</th>
                                 <th class="text-center">Projekt</th>
-                                <th class="text-center">Czas</th>
-                                <th class="text-center">%</th>
+                                <th class="text-center">Czas [h]</th>
+                                <th class="text-center">Czas / filtr [%]</th>
                             </tr>
                             <?php $lp = 1; foreach ($summaryTabs['projects'] as $project => $seconds): ?>
                                 <tr>
                                     <td class="text-center"><?= $lp ?></td>
                                     <td class="text-center"><?= isset($projects[$project]) ? $projects[$project] : $project ?></td>
-                                    <td class="text-center"><?= $searchModel->formatSummary($seconds) ?></td>
-                                    <td class="text-center"><?= $summaryTabs['seconds'] != 0 ? round($seconds * 100 / $summaryTabs['seconds'], 2) : '-' ?></td>
+                                    <td class="text-center"><?= $searchModel->formatSummary($seconds, true) ?></td>
+                                    <td class="text-center"><?= $summaryTabs['seconds'] != 0 ? round($seconds * 100 / $summaryTabs['seconds'], 2) : '0' ?></td>
                                 </tr>
                                 <?php $lp++; endforeach; ?>
                         </table>

@@ -132,11 +132,18 @@ class TimeSearch extends Time
         $report =  $sumQuery->all();
         $seconds = 0;
         $employees = [];
+        $efficiency = [];
         $projects = [];
         foreach ($report as $data) {
             $seconds += $data['seconds'];
             if (!isset($employees[$data['user_id']])) {
                 $employees[$data['user_id']] = 0;
+            }
+            if (!isset($efficiency[$data['user_id']])) {
+                $efficiency[$data['user_id']] = [
+                    'curr' => $this->currentMonthWorkingTimeOf($data['user_id']),
+                    'prev' => $this->previousMonthWorkingTimeOf($data['user_id']),
+                ];
             }
             $employees[$data['user_id']] += $data['seconds'];
             if (!isset($projects[$data['project_id']])) {
@@ -151,6 +158,7 @@ class TimeSearch extends Time
             'seconds' => $seconds,
             'employees' => $employees,
             'projects' => $projects,
+            'efficiency' => $efficiency,
         ];
     }
 
@@ -226,9 +234,10 @@ class TimeSearch extends Time
      * Formats number of seconds.
      * Normally asDuration() could be used but here we need units smaller than days.
      * @param int $seconds
+     * @param bool $decimal
      * @return string
      */
-    public function formatSummary($seconds)
+    public function formatSummary($seconds, $decimal = false)
     {
         $minus = false;
         if ($seconds < 0) {
@@ -240,6 +249,9 @@ class TimeSearch extends Time
         $minutes = floor($left / 60);
         $left -= $minutes * 60;
 
+        if ($decimal) {
+            return $hours . '.' . ($minutes ? round($minutes * 10 / 6) : '00');
+        }
         $parts = [];
         if ($hours > 0 || $seconds === 0) {
             $parts[] = Yii::t('yii', '{delta, plural, =1{1 hour} other{# hours}}', ['delta' => $hours]);

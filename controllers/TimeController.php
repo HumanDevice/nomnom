@@ -164,7 +164,7 @@ class TimeController extends Controller
             'URL',
             'Autor',
             'Issue',
-            'Czas [s]',
+            'Czas [h]',
             'Czas [h:m:s]',
             'Opis',
             'Data',
@@ -175,7 +175,7 @@ class TimeController extends Controller
                 $this->formatCsv($entry->issue_id ? $entry->project->url . '/issues/' . $entry->issue_id : $entry->project->url),
                 $this->formatCsv($entry->user->username),
                 $entry->issue_id,
-                $entry->seconds,
+                round($entry->seconds / 3600, 2),
                 $this->formatTime($entry->seconds),
                 $this->formatCsv($entry->description),
                 Yii::$app->formatter->asDate($entry->created_at, 'y-MM-dd')
