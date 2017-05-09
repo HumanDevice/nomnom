@@ -98,7 +98,7 @@ class Time extends ActiveRecord
             'issue_id' => $issue,
             'user_id' => $userModel->id,
             'seconds' => $time,
-        ])->limit(1)->one();
+        ])->orderBy(['created_at' => SORT_DESC])->limit(1)->one();
         if ($previousEntry && $previousEntry->created_at > time() - 5) {
             // 5 secs duplicate prevention
             Yii::error('Duplikat wpisu czasowego');
