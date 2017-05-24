@@ -47,6 +47,7 @@ class User extends ActiveRecord implements IdentityInterface
     const DIVISION_IOS = 3;
     const DIVISION_JAVA = 4;
     const DIVISION_QA = 5;
+    const DIVISION_MARKETING = 6;
 
     /**
      * @inheritdoc
@@ -271,6 +272,7 @@ class User extends ActiveRecord implements IdentityInterface
             self::DIVISION_IOS => 'iOS',
             self::DIVISION_JAVA => 'Java',
             self::DIVISION_QA => 'QA',
+            self::DIVISION_MARKETING => 'Marketing',
         ];
     }
 }
