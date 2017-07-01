@@ -13,9 +13,9 @@ if (!isset($service)) {
     <div class="col-lg-12 text-right">
         <div class="form-group">
             <div class="pull-left">
-                <a href="<?= Url::to(['site/index']) ?>" class="btn btn-info btn-xs"><i class="glyphicon glyphicon-cutlery"></i> NomNom</a>
-                <a href="<?= Url::to(['tiktak/index']) ?>" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-time"></i> TikTak</a>
+                <?php /*<a href="<?= Url::to(['site/index']) ?>" class="btn btn-info btn-xs"><i class="glyphicon glyphicon-cutlery"></i> NomNom</a>*/ ?>
                 <a href="<?= Url::to(['bimbam/index']) ?>" class="btn btn-success btn-xs"><i class="glyphicon glyphicon-tags"></i> BimBam</a>
+                <a href="<?= Url::to(['tiktak/index']) ?>" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-time"></i> TikTak</a>
             </div>
 <?php if ($service === 'nomnom'): ?>
             <a href="<?= Url::to(['account/index']) ?>" class="btn btn-<?= $active == 'a' ? 'danger' : 'default' ?> btn-xs"><i class="glyphicon glyphicon-usd"></i> Aktualne saldo: <strong><?= Yii::$app->formatter->asCurrency(Yii::$app->user->identity->balance, 'PLN') ?></strong></a>

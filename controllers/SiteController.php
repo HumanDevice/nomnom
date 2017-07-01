@@ -72,6 +72,8 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
+        return $this->redirect(['bimbam/index']);
+        /*
         $order = Order::find()->where(['!=', 'stage', Order::STAGE_CLOSE])->orderBy(['id' => SORT_DESC])->limit(1)->one();
 
         if ($order) {
@@ -84,6 +86,7 @@ class SiteController extends Controller
         }
 
         return $this->render('index');
+        */
     }
 
     /**
